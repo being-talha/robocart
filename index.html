@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart AI Shopping Cart</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    /* Reset */
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+
+    body { background: #f4f6f8; color: #333; }
+
+    /* Header */
+    header { background: #2ecc71; color: white; padding: 15px 20px; text-align: center; font-size: 24px; font-weight: bold; position: sticky; top:0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    /* Layout */
+    .container { display: flex; flex-wrap: wrap; padding: 20px; gap: 20px; justify-content: center; }
+    .card { background: white; padding: 20px; border-radius: 12px; flex: 1; min-width: 300px; max-width: 450px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+    h3 { margin-bottom: 10px; color: #2ecc71; }
+
+    /* Product Image */
+    #productImage { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; }
+    #productImage:hover { transform: scale(1.05); }
+
+    /* Buttons */
+    button { padding: 10px 15px; margin: 5px 0; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.3s; }
+    button.add { background: #27ae60; color: white; }
+    button.add:hover { background: #2ecc71; transform: translateY(-2px); }
+    button.remove { background: #e74c3c; color: white; }
+    button.remove:hover { background: #ff4d4d; transform: translateY(-2px); }
+    button.search { background: #3498db; color: white; }
+    button.search:hover { background: #3aa0e0; }
+
+    /* Input */
+    input { padding: 8px; font-size: 16px; width: calc(100% - 16px); border-radius: 6px; border: 1px solid #ccc; margin-bottom: 10px; }
+
+    /* Cart List */
+    ul#cart { list-style-type: none; max-height: 300px; overflow-y: auto; margin-top: 10px; }
+    ul#cart li { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+    ul#cart li:last-child { border-bottom: none; }
+
+    /* Total */
+    #total { margin-top: 15px; font-size: 18px; font-weight: bold; color: #27ae60; }
+
+    /* Responsive */
+    @media(max-width: 800px) {
+        .container { flex-direction: column; align-items: center; }
+    }
+</style>
+</head>
+<body>
+
+<header>🛒 Smart AI Shopping Cart</header>
+
+<div class="container">
+
+    <!-- LEFT: Product Details -->
+    <div class="card">
+        <h3>Product Details</h3>
+        <img id="productImage" src="" alt="Product Image"/>
+        <h2 id="name">--</h2>
+        <h3 id="price">Rs 0</h3>
+    </div>
+
+    <!-- RIGHT: Cart -->
+    <div class="card">
+        <h3>Scan Barcode</h3>
+        <input type="text" id="barcode" placeholder="Enter barcode" />
+        <button class="search" onclick="search()">🔍 Search</button>
+        <br>
+        <button class="add" onclick="add()">➕ Add</button>
+        <button class="remove" onclick="remove()">➖ Remove</button>
+
+        <h3>Your Cart</h3>
+        <ul id="cart"></ul>
+        <h3 id="total">Total: Rs 0</h3>
+    </div>
+
+</div>
+
+<script>
+let currentProduct = null;
+
+function search() {
+    let barcode = document.getElementById("barcode").value;
+    fetch("/search", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({barcode: barcode})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "found") {
+            currentProduct = data;
+            document.getElementById("name").innerText = data.name;
+            document.getElementById("price").innerText = "Rs " + data.price;
+            document.getElementById("productImage").src = "/images/" + data.image;
+            add(); // auto add to cart
+        } else {
+            alert("Product Not Found");
+            currentProduct = null;
+            document.getElementById("name").innerText = "--";
+            document.getElementById("price").innerText = "Rs 0";
+            document.getElementById("productImage").src = "";
+        }
+        document.getElementById("barcode").value = "";
+    });
+}
+
+function add() {
+    if(!currentProduct) return;
+    fetch("/add", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(currentProduct)
+    })
+    .then(res => res.json())
+    .then(updateCart);
+}
+
+function remove() {
+    if(!currentProduct) return;
+    fetch("/remove", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name: currentProduct.name})
+    })
+    .then(res => res.json())
+    .then(updateCart);
+}
+
+function updateCart(data) {
+    let cartList = document.getElementById("cart");
+    cartList.innerHTML = "";
+    data.items.forEach(item => {
+        let li = document.createElement("li");
+        li.innerHTML = `<span>${item.name} x${item.qty}</span> <span>Rs ${item.subtotal}</span>`;
+        cartList.appendChild(li);
+    });
+    document.getElementById("total").innerText = "Total: Rs " + data.total;
+}
+</script>
+
+</body>
+</html>
