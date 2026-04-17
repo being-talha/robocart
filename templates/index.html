@@ -75,6 +75,10 @@
         <h3>Your Cart</h3>
         <ul id="cart"></ul>
         <h3 id="total">Total: Rs 0</h3>
+
+        <button onclick="checkout()" style="background:#2ecc71; color:white;">
+            💳 Checkout
+        </button>
     </div>
 
 </div>
@@ -139,6 +143,23 @@ function updateCart(data) {
         cartList.appendChild(li);
     });
     document.getElementById("total").innerText = "Total: Rs " + data.total;
+}
+
+function checkout() {
+    fetch("/checkout", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({payment: "cash"})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "success") {
+            localStorage.setItem("receipt", JSON.stringify(data));
+            window.location.href = "/receipt.html";
+        } else {
+            alert("Cart is empty!");
+        }
+    });
 }
 </script>
 

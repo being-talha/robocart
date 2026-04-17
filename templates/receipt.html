@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Receipt</title>
+</head>
+<body>
+    <h1>🧾 Receipt</h1>
+    <div id="receipt"></div>
+
+<script>
+const data = JSON.parse(localStorage.getItem("receipt"));
+
+let html = "<ul>";
+data.items.forEach(i => {
+    html += `<li>${i.name} x${i.qty} = Rs ${i.price * i.qty}</li>`;
+});
+html += "</ul>";
+
+html += `<h2>Total: Rs ${data.total}</h2>`;
+
+document.getElementById("receipt").innerHTML = html;
+</script>
+</body>
+</html>
