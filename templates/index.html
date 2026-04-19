@@ -1,167 +1,302 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart AI Shopping Cart</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-    /* Reset */
-    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cart POS Display</title>
 
-    body { background: #f4f6f8; color: #333; }
-
-    /* Header */
-    header { background: #2ecc71; color: white; padding: 15px 20px; text-align: center; font-size: 24px; font-weight: bold; position: sticky; top:0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-
-    /* Layout */
-    .container { display: flex; flex-wrap: wrap; padding: 20px; gap: 20px; justify-content: center; }
-    .card { background: white; padding: 20px; border-radius: 12px; flex: 1; min-width: 300px; max-width: 450px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
-    h3 { margin-bottom: 10px; color: #2ecc71; }
-
-    /* Product Image */
-    #productImage { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; transition: transform 0.3s; }
-    #productImage:hover { transform: scale(1.05); }
-
-    /* Buttons */
-    button { padding: 10px 15px; margin: 5px 0; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.3s; }
-    button.add { background: #27ae60; color: white; }
-    button.add:hover { background: #2ecc71; transform: translateY(-2px); }
-    button.remove { background: #e74c3c; color: white; }
-    button.remove:hover { background: #ff4d4d; transform: translateY(-2px); }
-    button.search { background: #3498db; color: white; }
-    button.search:hover { background: #3aa0e0; }
-
-    /* Input */
-    input { padding: 8px; font-size: 16px; width: calc(100% - 16px); border-radius: 6px; border: 1px solid #ccc; margin-bottom: 10px; }
-
-    /* Cart List */
-    ul#cart { list-style-type: none; max-height: 300px; overflow-y: auto; margin-top: 10px; }
-    ul#cart li { padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-    ul#cart li:last-child { border-bottom: none; }
-
-    /* Total */
-    #total { margin-top: 15px; font-size: 18px; font-weight: bold; color: #27ae60; }
-
-    /* Responsive */
-    @media(max-width: 800px) {
-        .container { flex-direction: column; align-items: center; }
-    }
-</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
+  <div class="screen">
+    <div class="pos-layout">
 
-<header>🛒 Smart AI Shopping Cart</header>
+      <!-- LEFT: Main Product -->
+      <section class="product-panel">
+        <div class="search-box">
+          <input
+            type="text"
+            id="barcode"
+            placeholder="Scan barcode..."
+            autocomplete="off"
+            autofocus
+          >
+          <button type="button" onclick="searchProduct()">Scan</button>
+        </div>
 
-<div class="container">
+        <div class="product-image-wrap">
+          <img id="productImage" src="https://via.placeholder.com/260x220?text=Scan+Item" alt="Product Image">
+        </div>
 
-    <!-- LEFT: Product Details -->
-    <div class="card">
-        <h3>Product Details</h3>
-        <img id="productImage" src="" alt="Product Image"/>
-        <h2 id="name">--</h2>
-        <h3 id="price">Rs 0</h3>
+        <div class="product-info">
+          <h1 id="productName">Ready to Scan</h1>
+          <p class="product-meta" id="productCode">Barcode: -</p>
+
+          <div class="price-row">
+            <span class="label">Price</span>
+            <span class="value" id="productPrice">Rs 0</span>
+          </div>
+
+          <div class="price-row">
+            <span class="label">Qty</span>
+            <span class="value" id="productQty">0</span>
+          </div>
+
+          <div class="price-row total-line">
+            <span class="label">Item Total</span>
+            <span class="value" id="itemTotal">Rs 0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Controls + Bill + Recommended -->
+      <aside class="checkout-panel">
+        <div class="top-controls">
+          <div class="qty-box">
+            <button class="qty-btn minus" type="button" onclick="decreaseQty()">−</button>
+            <div class="qty-display" id="qtyDisplay">0</div>
+            <button class="qty-btn plus" type="button" onclick="increaseQty()">+</button>
+          </div>
+
+          <div class="bill-box">
+            <div class="bill-row">
+              <span>Subtotal</span>
+              <strong id="subtotal">Rs 0</strong>
+            </div>
+            <div class="bill-row">
+              <span>Tax</span>
+              <strong id="tax">Rs 0</strong>
+            </div>
+            <div class="bill-row grand-total">
+              <span>Total</span>
+              <strong id="grandTotal">Rs 0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="recommend-box">
+          <div class="recommend-head">
+            <h3>Buy Also</h3>
+            <span>Recommended</span>
+          </div>
+
+          <div class="recommend-list">
+            <button class="recommend-card" type="button" onclick="addRecommended('111111', 'Bread', 180, 'bread.png')">
+              <div class="rec-icon">🍞</div>
+              <div class="rec-info">
+                <strong>Bread</strong>
+                <span>Rs 180</span>
+              </div>
+              <div class="rec-add">+</div>
+            </button>
+
+            <button class="recommend-card" type="button" onclick="addRecommended('222222', 'Butter', 220, 'butter.png')">
+              <div class="rec-icon">🧈</div>
+              <div class="rec-info">
+                <strong>Butter</strong>
+                <span>Rs 220</span>
+              </div>
+              <div class="rec-add">+</div>
+            </button>
+
+            <button class="recommend-card" type="button" onclick="addRecommended('333333', 'Eggs', 320, 'eggs.png')">
+              <div class="rec-icon">🥚</div>
+              <div class="rec-info">
+                <strong>Eggs</strong>
+                <span>Rs 320</span>
+              </div>
+              <div class="rec-add">+</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="action-area">
+          <button class="checkout-btn" type="button" onclick="checkout()">Checkout</button>
+        </div>
+      </aside>
+
     </div>
+  </div>
 
-    <!-- RIGHT: Cart -->
-    <div class="card">
-        <h3>Scan Barcode</h3>
-        <input type="text" id="barcode" placeholder="Enter barcode" />
-        <button class="search" onclick="search()">🔍 Search</button>
-        <br>
-        <button class="add" onclick="add()">➕ Asssdd</button>
-        <button class="remove" onclick="remove()">➖ Remove</button>
+  <script>
+    let currentProduct = null;
+    const taxRate = 0.05;
 
-        <h3>Your Cart</h3>
-        <ul id="cart"></ul>
-        <h3 id="total">Total: Rs 0</h3>
+    function formatCurrency(value) {
+      return "Rs " + Number(value).toFixed(1).replace(".0", "");
+    }
 
-        <button onclick="checkout()" style="background:#2ecc71; color:white;">
-            💳 Checkout
-        </button>
-    </div>
+    function setProductView(product, qty = 0) {
+      currentProduct = product;
 
-</div>
+      document.getElementById("productName").innerText = product.name || "Ready to Scan";
+      document.getElementById("productCode").innerText = "Barcode: " + (product.barcode || "-");
+      document.getElementById("productPrice").innerText = formatCurrency(product.price || 0);
+      document.getElementById("productQty").innerText = qty;
+      document.getElementById("qtyDisplay").innerText = qty;
+      document.getElementById("itemTotal").innerText = formatCurrency((product.price || 0) * qty);
 
-<script>
-let currentProduct = null;
+      const imageEl = document.getElementById("productImage");
+      if (product.image) {
+        imageEl.src = "/static/images/" + product.image;
+      } else {
+        imageEl.src = "https://via.placeholder.com/260x220?text=No+Image";
+      }
+    }
 
-function search() {
-    let barcode = document.getElementById("barcode").value;
-    fetch("/search", {
+    function resetProductView() {
+      currentProduct = null;
+      document.getElementById("productName").innerText = "Ready to Scan";
+      document.getElementById("productCode").innerText = "Barcode: -";
+      document.getElementById("productPrice").innerText = "Rs 0";
+      document.getElementById("productQty").innerText = "0";
+      document.getElementById("qtyDisplay").innerText = "0";
+      document.getElementById("itemTotal").innerText = "Rs 0";
+      document.getElementById("productImage").src = "https://via.placeholder.com/260x220?text=Scan+Item";
+    }
+
+    function updateBill(cartData) {
+      const subtotal = Number(cartData.total || 0);
+      const tax = subtotal * taxRate;
+      const total = subtotal + tax;
+
+      document.getElementById("subtotal").innerText = formatCurrency(subtotal);
+      document.getElementById("tax").innerText = formatCurrency(tax);
+      document.getElementById("grandTotal").innerText = formatCurrency(total);
+
+      if (currentProduct) {
+        const matched = (cartData.items || []).find(item => item.barcode === currentProduct.barcode);
+        const qty = matched ? matched.qty : 0;
+        document.getElementById("productQty").innerText = qty;
+        document.getElementById("qtyDisplay").innerText = qty;
+        document.getElementById("itemTotal").innerText = formatCurrency((currentProduct.price || 0) * qty);
+      }
+    }
+
+    function loadCart() {
+      fetch("/cart")
+        .then(res => res.json())
+        .then(data => {
+          updateBill(data);
+        })
+        .catch(err => console.error("Cart load error:", err));
+    }
+
+    function searchProduct() {
+      const barcodeInput = document.getElementById("barcode");
+      const barcode = barcodeInput.value.trim();
+
+      if (!barcode) return;
+
+      fetch("/search", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({barcode: barcode})
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === "found") {
-            currentProduct = data;
-            document.getElementById("name").innerText = data.name;
-            document.getElementById("price").innerText = "Rs " + data.price;
-            document.getElementById("productImage").src = "/images/" + data.image;
-            add(); // auto add to cart
-        } else {
-            alert("Product Not Found");
-            currentProduct = null;
-            document.getElementById("name").innerText = "--";
-            document.getElementById("price").innerText = "Rs 0";
-            document.getElementById("productImage").src = "";
-        }
-        document.getElementById("barcode").value = "";
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ barcode: barcode })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "found") {
+            setProductView(data, 0);
+            addCurrentProduct();
+          } else {
+            alert("Product not found");
+            resetProductView();
+          }
+
+          barcodeInput.value = "";
+          barcodeInput.focus();
+        })
+        .catch(err => {
+          console.error("Search error:", err);
+          alert("Search failed");
+        });
+    }
+
+    function addCurrentProduct() {
+      if (!currentProduct) return;
+
+      fetch("/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ barcode: currentProduct.barcode })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "error") {
+            alert(data.message || "Could not add product");
+            return;
+          }
+          updateBill(data);
+        })
+        .catch(err => {
+          console.error("Add error:", err);
+          alert("Failed to add item");
+        });
+    }
+
+    function removeCurrentProduct() {
+      if (!currentProduct) return;
+
+      fetch("/remove", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ barcode: currentProduct.barcode })
+      })
+        .then(res => res.json())
+        .then(data => {
+          updateBill(data);
+        })
+        .catch(err => {
+          console.error("Remove error:", err);
+          alert("Failed to remove item");
+        });
+    }
+
+    function increaseQty() {
+      addCurrentProduct();
+    }
+
+    function decreaseQty() {
+      removeCurrentProduct();
+    }
+
+    function addRecommended(barcode, name, price, image) {
+      currentProduct = {
+        barcode: barcode,
+        name: name,
+        price: price,
+        image: image
+      };
+
+      setProductView(currentProduct, 0);
+      addCurrentProduct();
+    }
+
+    function checkout() {
+      window.location.href = "/checkout";
+    }
+
+    document.getElementById("barcode").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchProduct();
+      }
     });
-}
 
-function add() {
-    if(!currentProduct) return;
-    fetch("/add", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(currentProduct)
-    })
-    .then(res => res.json())
-    .then(updateCart);
-}
-
-function remove() {
-    if(!currentProduct) return;
-    fetch("/remove", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({name: currentProduct.name})
-    })
-    .then(res => res.json())
-    .then(updateCart);
-}
-
-function updateCart(data) {
-    let cartList = document.getElementById("cart");
-    cartList.innerHTML = "";
-    data.items.forEach(item => {
-        let li = document.createElement("li");
-        li.innerHTML = `<span>${item.name} x${item.qty}</span> <span>Rs ${item.subtotal}</span>`;
-        cartList.appendChild(li);
-    });
-    document.getElementById("total").innerText = "Total: Rs " + data.total;
-}
-
-function checkout() {
-    fetch("/checkout", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({payment: "cash"})
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === "success") {
-            localStorage.setItem("receipt", JSON.stringify(data));
-            window.location.href = "/receipt.html";
-        } else {
-            alert("Cart is empty!");
-        }
-    });
-}
-</script>
-
+    window.onload = function() {
+      resetProductView();
+      loadCart();
+      document.getElementById("barcode").focus();
+    };
+  </script>
 </body>
 </html>

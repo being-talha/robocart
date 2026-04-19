@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout | RoboCart</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='checkout.css') }}">
+</head>
+<body>
+  <div class="checkout-screen">
+    <div class="checkout-layout">
+
+      <!-- LEFT: Receipt / Bill -->
+      <section class="bill-panel">
+        <div class="panel-head">
+          <div>
+            <h1>Checkout</h1>
+            <p>Finalize order and complete payment</p>
+          </div>
+          <div class="order-badge" id="orderId">#{{ order_ref }}</div>
+        </div>
+
+        <div class="store-card">
+          <div>
+            <h3>RoboCart Smart Store</h3>
+            <p>Self Checkout Terminal</p>
+          </div>
+          <div class="time-block">
+            <span id="billDate">{{ current_date }}</span>
+            <strong id="billTime">{{ current_time }}</strong>
+          </div>
+        </div>
+
+        <div class="items-card">
+          <div class="card-title-row">
+            <h2>Bill Summary</h2>
+            <span id="itemCount">{{ items|length }} Items</span>
+          </div>
+
+          <div class="bill-items" id="billItems">
+            {% for item in items %}
+            <div class="bill-item">
+              <div>
+                <strong>{{ item.name }}</strong>
+                <span>{{ item.qty }} × Rs {{ item.price }}</span>
+              </div>
+              <div class="item-amount">Rs {{ item.subtotal }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="totals-card">
+          <div class="total-row">
+            <span>Subtotal</span>
+            <strong id="subtotal">Rs {{ subtotal }}</strong>
+          </div>
+          <div class="total-row">
+            <span>Tax</span>
+            <strong id="tax">Rs {{ tax }}</strong>
+          </div>
+          <div class="total-row">
+            <span>Service Fee</span>
+            <strong id="fee">Rs 0</strong>
+          </div>
+          <div class="total-row grand">
+            <span>Total Payable</span>
+            <strong id="grandTotal">Rs {{ grand_total }}</strong>
+          </div>
+        </div>
+
+        <div class="bill-actions">
+          <button class="secondary-btn" type="button" onclick="goBack()">← Back to Cart</button>
+          <button class="secondary-btn" type="button" onclick="downloadBill()">Generate Bill</button>
+        </div>
+      </section>
+
+      <!-- RIGHT: Payment -->
+      <aside class="payment-panel">
+        <div class="payment-head">
+          <h2>Select Payment Method</h2>
+          <p>Scan QR and complete payment from wallet</p>
+        </div>
+
+        <div class="payment-options">
+          <button class="method-card active" id="easyBtn" type="button" onclick="selectMethod('easypaisa')">
+            <div class="method-logo easy">EP</div>
+            <div class="method-info">
+              <strong>EasyPaisa</strong>
+              <span>Mobile Wallet</span>
+            </div>
+          </button>
+
+          <button class="method-card" id="jazzBtn" type="button" onclick="selectMethod('jazzcash')">
+            <div class="method-logo jazz">JC</div>
+            <div class="method-info">
+              <strong>JazzCash</strong>
+              <span>Mobile Wallet</span>
+            </div>
+          </button>
+        </div>
+
+        <div class="qr-card">
+          <div class="qr-top">
+            <div>
+              <h3 id="selectedMethodTitle">EasyPaisa QR</h3>
+              <p>Scan to pay the exact amount</p>
+            </div>
+            <div class="amount-chip" id="payableAmount">Rs {{ grand_total }}</div>
+          </div>
+
+          <div class="qr-box">
+            <div id="qrcode"></div>
+          </div>
+
+          <div class="expiry-row">
+            <span>QR Expiry</span>
+            <strong id="qrTimer">04:59</strong>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <div class="status-row">
+            <span>Payment Status</span>
+            <strong class="pending" id="paymentStatus">Pending</strong>
+          </div>
+          <div class="status-row">
+            <span>Selected Method</span>
+            <strong id="selectedMethodText">EasyPaisa</strong>
+          </div>
+          <div class="status-row">
+            <span>Reference ID</span>
+            <strong id="referenceId">TXN-000000</strong>
+          </div>
+        </div>
+
+        <div class="extra-features">
+          <div class="feature-box">
+            <span>Auto verify</span>
+            <strong>Enabled</strong>
+          </div>
+          <div class="feature-box">
+            <span>Digital receipt</span>
+            <strong>Ready</strong>
+          </div>
+          <div class="feature-box">
+            <span>Cart lock</span>
+            <strong>Active</strong>
+          </div>
+        </div>
+
+        <div class="payment-actions">
+          <button class="secondary-btn" type="button" onclick="refreshQR()">Refresh QR</button>
+          <button class="primary-btn" type="button" onclick="completePayment()">Pay Now</button>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script>
+    window.checkoutData = {
+      orderRef: "{{ order_ref }}",
+      subtotal: {{ subtotal|tojson }},
+      tax: {{ tax|tojson }},
+      grandTotal: {{ grand_total|tojson }},
+      items: {{ items|tojson }}
+    };
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="{{ url_for('static', filename='checkout.js') }}"></script>
+</body>
+</html>
