@@ -2,82 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RoboCart | Smart Dashboard</title>
-
-    <link rel="stylesheet" href="style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
-
-<!-- TOP NAV -->
-<div class="top-nav">
-    <div class="theme-switch-wrapper">
-        <i class="fas fa-sun"></i>
-        <label class="theme-switch">
-            <input type="checkbox" id="modeToggle">
-            <span class="slider-round"></span>
-        </label>
-        <i class="fas fa-moon"></i>
-    </div>
-</div>
-
-<!-- MAIN DASHBOARD -->
-<main class="dashboard-area">
-
-    <!-- HERO -->
-    <section class="hero-center">
-
-        <div class="status-badge">
-            <i class="fas fa-robot"></i> Smart Shopping Experience
-        </div>
-
-        <h1>
-            WELCOME TO THE FUTURE<br>
-            <span class="highlight">OF RETAIL SHOPPING</span>
-        </h1>
-
-        <p class="subtitle">
-            Experience seamless, AI-driven grocery shopping like never before.
-        </p>
-
-      <div class="action-zone side-by-side">
-    <button class="btn-start-small pulse-animation">
-        <i class="fas fa-shopping-basket"></i> Start Shopping
-    </button>
-    <button class="btn-demo-outline">
-        <i class="fas fa-play-circle"></i> Watch Demo
-    </button>
-</div>
-
-    </section>
-
-    <!-- FEATURES -->
-    <section class="features-row">
-
-        <div class="card fade-in-up">
-            <i class="fas fa-shield-halved"></i>
-            <h3>Secure Pay</h3>
-            <p class="card-text">Safe & encrypted payments</p>
-        </div>
-
-        <div class="card fade-in-up">
-            <i class="fas fa-brain"></i>
-            <h3>AI Powered</h3>
-            <p class="card-text">Smart product suggestions</p>
-        </div>
-
-        <div class="card fade-in-up">
-            <i class="fas fa-barcode"></i>
-            <h3>Quick Scan</h3>
-            <p class="card-text">Instant barcode recognition</p>
-        </div>
-
-    </section>
-
-</main>
-
-<script src="script.js"></script>
+    <h1>Welcome to Robocart!</h1>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
