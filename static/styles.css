@@ -357,3 +357,30 @@ body.dark-mode .subtitle{
         right: 15px;
     }
 }
+
+.btn-start-small {
+  background: var(--primary-green);
+  color: white;
+  padding: 14px 34px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(15, 61, 62, 0.25);
+  transition: 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.btn-start-small:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 24px rgba(15, 61, 62, 0.35);
+}
+
+.btn-start-small:active {
+  transform: scale(0.97);
+}
