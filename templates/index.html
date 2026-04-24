@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart AI Cart POS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart AI Cart POS</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+
+<body>
 <div class="app">
+
+    <!-- LEFT SIDE -->
     <div class="left-side">
+
         <div class="scanner-header">
             <input type="text" id="barcode" placeholder="Scan barcode..." autocomplete="off">
         </div>
@@ -25,8 +29,10 @@
             </div>
         </div>
 
+        <!-- AI RECOMMENDATIONS -->
         <div class="ai-footer">
             <span class="section-label">AI Recommendations</span>
+
             <div class="ai-list">
                 <div class="ai-card" onclick="addRecommended('111111','Bread',180,'bread.png')">
                     <img src="/static/images/bread.png">
@@ -35,6 +41,7 @@
                         <small>Rs 180</small>
                     </div>
                 </div>
+
                 <div class="ai-card" onclick="addRecommended('222222','Butter',220,'butter.png')">
                     <img src="/static/images/butter.png">
                     <div class="ai-card-text">
@@ -42,6 +49,7 @@
                         <small>Rs 220</small>
                     </div>
                 </div>
+
                 <div class="ai-card" onclick="addRecommended('333333','Eggs',320,'eggs.png')">
                     <img src="/static/images/eggs.png">
                     <div class="ai-card-text">
@@ -55,6 +63,7 @@
 
     <div class="vertical-divider"></div>
 
+    <!-- RIGHT SIDE -->
     <div class="right-side">
         <h2 class="cart-title">Your Cart</h2>
         <div id="cartItems" class="cart-items"></div>
@@ -69,108 +78,156 @@
 </div>
 
 <script>
-    // --- Logic is exactly the same as requested ---
-    let currentProduct = null;
-    const taxRate = 0.05;
+let currentProduct = null;
+const taxRate = 0.05;
 
-    function formatCurrency(value) {
-        return "Rs " + Number(value).toFixed(1).replace(".0", "");
+function formatCurrency(value) {
+    return "Rs " + Number(value).toFixed(1).replace(".0","");
+}
+
+/* PRODUCT VIEW */
+function setProductView(product) {
+    currentProduct = product;
+
+    document.getElementById("productName").innerText =
+        product.name || "Ready to Scan";
+
+    document.getElementById("productPrice").innerText =
+        formatCurrency(product.price || 0);
+
+    const imageEl = document.getElementById("productImage");
+
+    if (product.image) {
+        imageEl.src = "/static/images/" + product.image;
+    } else {
+        imageEl.src = "https://via.placeholder.com/260x220?text=No+Image";
     }
+}
 
-    function setProductView(product) {
-        currentProduct = product;
-        document.getElementById("productName").innerText = product.name || "Ready to Scan";
-        document.getElementById("productPrice").innerText = formatCurrency(product.price || 0);
-        const imageEl = document.getElementById("productImage");
-        imageEl.src = product.image ? ("/static/images/" + product.image) : "https://via.placeholder.com/150?text=No+Image";
-    }
+function resetProductView() {
+    currentProduct = null;
+    document.getElementById("productName").innerText = "Ready to Scan";
+    document.getElementById("productPrice").innerText = "Rs 0";
+    document.getElementById("productImage").src =
+        "https://via.placeholder.com/260x220?text=Scan+Item";
+}
 
-    function updateCartUI(cartData) {
-        const container = document.getElementById("cartItems");
-        container.innerHTML = "";
-        (cartData.items || []).forEach(item => {
-            container.innerHTML += `
-                <div class="cart-item">
-                    <div class="cart-item-left">
-                        <h4>${item.name}</h4>
-                        <p>${formatCurrency(item.price)}</p>
-                    </div>
-                    <div class="qty-controls">
-                        <button onclick="removeItem('${item.barcode}')">−</button>
-                        <span>${item.qty}</span>
-                        <button onclick="addItem('${item.barcode}')">+</button>
-                    </div>
-                </div>`;
-        });
-    }
+/* BILL + CART RENDER */
+function updateBill(cartData) {
+    const subtotal = Number(cartData.total || 0);
+    const tax = subtotal * taxRate;
+    const total = subtotal + tax;
 
-    function updateBill(cartData) {
-        const subtotal = Number(cartData.total || 0);
-        const tax = subtotal * taxRate;
-        const total = subtotal + tax;
-        document.getElementById("subtotal").innerText = formatCurrency(subtotal);
-        document.getElementById("tax").innerText = formatCurrency(tax);
-        document.getElementById("grandTotal").innerText = formatCurrency(total);
-        updateCartUI(cartData);
-    }
+    document.getElementById("subtotal").innerText = formatCurrency(subtotal);
+    document.getElementById("tax").innerText = formatCurrency(tax);
+    document.getElementById("grandTotal").innerText = formatCurrency(total);
 
-    function loadCart() {
-        fetch("/cart").then(res => res.json()).then(data => updateBill(data));
-    }
+    // 🔥 render cart items
+    const cartContainer = document.getElementById("cartItems");
+    cartContainer.innerHTML = "";
 
-    function searchProduct() {
-        const barcode = document.getElementById("barcode").value.trim();
-        if (!barcode) return;
-        fetch("/search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "found") {
-                setProductView(data);
-                addItem(data.barcode);
-            } else {
-                alert("Product not found");
-            }
-            document.getElementById("barcode").value = "";
-        });
-    }
-
-    function addItem(barcode) {
-        fetch("/add", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode })
-        }).then(res => res.json()).then(data => updateBill(data));
-    }
-
-    function removeItem(barcode) {
-        fetch("/remove", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ barcode })
-        }).then(res => res.json()).then(data => updateBill(data));
-    }
-
-    function addRecommended(barcode, name, price, image) {
-        setProductView({ barcode, name, price, image });
-        addItem(barcode);
-    }
-
-    function checkout() { window.location.href = "/checkout"; }
-
-    let scanTimer;
-    document.getElementById("barcode").addEventListener("input", function () {
-        clearTimeout(scanTimer);
-        scanTimer = setTimeout(searchProduct, 300);
+    (cartData.items || []).forEach(item => {
+        cartContainer.innerHTML += `
+            <div class="cart-item">
+                <img src="/static/images/${item.image}" width="50">
+                <div class="cart-info">
+                    <strong>${item.name}</strong>
+                    <small>${formatCurrency(item.price)} x ${item.qty}</small>
+                </div>
+                <div class="cart-total">
+                    ${formatCurrency(item.price * item.qty)}
+                </div>
+            </div>
+        `;
     });
+}
 
-    window.onload = function () {
-        loadCart();
-        document.getElementById("barcode").focus();
-    };
+/* LOAD CART */
+function loadCart() {
+    fetch("/cart")
+        .then(res => res.json())
+        .then(data => updateBill(data))
+        .catch(err => console.error("Cart load error:", err));
+}
+
+/* SEARCH PRODUCT */
+function searchProduct() {
+    const barcodeInput = document.getElementById("barcode");
+    const barcode = barcodeInput.value.trim();
+    if (!barcode) return;
+
+    fetch("/search", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({barcode: barcode})
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "found") {
+            setProductView(data);
+            addCurrentProduct();
+        } else {
+            alert("Product not found");
+            resetProductView();
+        }
+        barcodeInput.value="";
+        barcodeInput.focus();
+    })
+    .catch(err => alert("Search failed"));
+}
+
+/* ADD PRODUCT */
+function addCurrentProduct() {
+    if (!currentProduct) return;
+
+    fetch("/add", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({barcode: currentProduct.barcode})
+    })
+    .then(res => res.json())
+    .then(data => updateBill(data))
+    .catch(err => alert("Failed to add item"));
+}
+
+/* REMOVE PRODUCT */
+function removeCurrentProduct() {
+    if (!currentProduct) return;
+
+    fetch("/remove", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({barcode: currentProduct.barcode})
+    })
+    .then(res => res.json())
+    .then(data => updateBill(data))
+    .catch(err => alert("Failed to remove item"));
+}
+
+/* AI ADD */
+function addRecommended(barcode,name,price,image) {
+    currentProduct = {barcode,name,price,image};
+    setProductView(currentProduct);
+    addCurrentProduct();
+}
+
+function checkout() {
+    window.location.href="/checkout";
+}
+
+/* SCANNER ENTER KEY */
+document.getElementById("barcode").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        searchProduct();
+    }
+});
+
+window.onload = function() {
+    resetProductView();
+    loadCart();
+    document.getElementById("barcode").focus();
+};
 </script>
 </body>
 </html>
