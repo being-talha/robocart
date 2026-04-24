@@ -165,7 +165,7 @@ body{
 /* PANELS (⭐ SCROLL FIX HERE) */
 .bill-panel,
 .payment-panel{
-  background:var(--primary)
+  /* background:var(--primary); */
   border:1px solid var(--border);
   border-radius:var(--radius-xl);
   box-shadow:var(--shadow);
