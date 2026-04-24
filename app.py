@@ -354,6 +354,9 @@ def approve_payment(order_ref):
             save_payments(payments)
             break
 
+    # clear cart after payment approval
+    cart.clear()
+
     return redirect("/admin/payments?key=12345")
 
 
@@ -370,8 +373,9 @@ def reject_payment(order_ref):
 
     return redirect("/admin/payments?key=12345")
 
-@app.route("/thankyou/<order_ref>")
-def thankyou(order_ref):
+@app.route("/thankyou")
+def thankyou():
+    order_ref = request.args.get("orderRef", "N/A")
     return render_template("thankyou.html", order_ref=order_ref)
 
 if __name__ == "__main__":

@@ -89,7 +89,7 @@ async function checkPaymentStatus() {
     if (data.status === "PAID") {
       setPaymentStatus("Paid", "paid");
       clearInterval(statusInterval);
-      window.location.href = "/thankyou/" + window.checkoutData.orderRef;
+      window.location.href = "/thankyou?orderRef=" + encodeURIComponent(window.checkoutData.orderRef);
       return;
     }
 
