@@ -10,11 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='checkout.css') }}">
 </head>
+
 <body>
+  <div id="customModal" class="custom-modal">
+    <div class="custom-modal-box">
+      <h3 id="customModalTitle">Message</h3>
+      <p id="customModalMessage"></p>
+      <button type="button" onclick="closeCustomModal()">OK</button>
+    </div>
+  </div>
+
   <div class="checkout-screen">
     <div class="checkout-layout">
 
-      <!-- LEFT BILL PANEL -->
       <section class="bill-panel">
         <div class="panel-head">
           <div>
@@ -29,24 +37,18 @@
           </div>
         </div>
 
-        <!-- ✅ MERGED SUMMARY CARD -->
         <div class="summary-card">
-
-          <!-- HEADER -->
           <div class="card-title-row">
             <div class="title-left">
               <div class="icon-box">🛍️</div>
-
               <div>
                 <h2>Bill Summary</h2>
                 <p class="subtitle">Review your items and total</p>
               </div>
             </div>
-
             <span id="itemCount">{{ items|length }} Items</span>
           </div>
 
-          <!-- ITEMS -->
           <div class="bill-items" id="billItems">
             {% for item in items %}
             <div class="bill-item">
@@ -59,10 +61,8 @@
             {% endfor %}
           </div>
 
-          <!-- DIVIDER -->
           <div class="divider"></div>
 
-          <!-- TOTALS -->
           <div class="totals-section">
             <div class="total-row">
               <span>Subtotal</span>
@@ -79,60 +79,52 @@
               <strong id="grandTotal">Rs {{ grand_total }}</strong>
             </div>
           </div>
-
         </div>
 
         <div class="feature-cards">
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <div>
+              <strong>Secure Payment</strong>
+              <p>Payment verified by admin</p>
+            </div>
+          </div>
 
-  <div class="feature-card">
-    <div class="feature-icon">🛡️</div>
-    <div>
-      <strong>Secure Payment</strong>
-      <p>Your data is protected</p>
-    </div>
-  </div>
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <div>
+              <strong>Real Transfer</strong>
+              <p>Pay using wallet QR</p>
+            </div>
+          </div>
 
-  <div class="feature-card">
-    <div class="feature-icon">↩️</div>
-    <div>
-      <strong>Easy Returns</strong>
-      <p>Hassle-free returns</p>
-    </div>
-  </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎧</div>
+            <div>
+              <strong>24/7 Support</strong>
+              <p>We’re here to help</p>
+            </div>
+          </div>
+        </div>
 
-  <div class="feature-card">
-    <div class="feature-icon">🎧</div>
-    <div>
-      <strong>24/7 Support</strong>
-      <p>We’re here to help</p>
-    </div>
-  </div>
-
-</div>
-
-        
-
-        <!-- ACTIONS -->
         <div class="bill-actions">
           <button class="btn-start-small btn-hover" onclick="goBack()">Back to Cart</button>
           <button class="btn-outline-green btn-hover" type="button" onclick="downloadBill()">Generate Bill</button>
         </div>
       </section>
 
-      <!-- RIGHT PAYMENT PANEL (UNCHANGED) -->
       <aside class="payment-panel">
         <div class="payment-head">
           <h2>Select Payment Method</h2>
         </div>
 
         <div class="payment-qr-combined">
-
           <div class="payment-options">
             <button class="method-card active" id="easyBtn" type="button" onclick="selectMethod('easypaisa')">
               <div class="method-logo easy">EP</div>
               <div class="method-info">
                 <strong>EasyPaisa</strong>
-                <span>Mobile Wallet</span>
+                <span>Scan QR and pay</span>
               </div>
             </button>
 
@@ -140,15 +132,15 @@
               <div class="method-logo jazz">JC</div>
               <div class="method-info">
                 <strong>JazzCash</strong>
-                <span>Mobile Wallet</span>
+                <span>Scan QR and pay</span>
               </div>
             </button>
 
-            <button class="method-card" id="raastBtn" type="button" onclick="selectMethod('raast')">
-              <div class="method-logo raast">R</div>
+            <button class="method-card" id="cardBtn" type="button" onclick="selectMethod('card')">
+              <div class="method-logo card">💳</div>
               <div class="method-info">
-                <strong>Raast ID</strong>
-                <span>Instant Bank Transfer</span>
+                <strong>Debit / Credit Card</strong>
+                <span>Upcoming </span>
               </div>
             </button>
           </div>
@@ -159,12 +151,39 @@
             </div>
 
             <div class="qr-box">
-              <div id="qrcode"></div>
-            </div>
+  <img
+    id="paymentQrImage"
+    src="{{ url_for('static', filename='payments/easypaisa-qr.png') }}"
+    alt="Payment QR"
+    style="width:220px; height:220px;"
+  >
+
+  <div class="mock-card-box" id="mockCardBox" style="display:none;">
+    <div class="mock-badge">Upcoming</div>
+
+    <label>Cardholder Name</label>
+    <input type="text" placeholder="Ali Khan" disabled>
+
+    <label>Card Number</label>
+    <input type="text" placeholder="4242 4242 4242 4242" disabled>
+
+    <div class="card-row">
+      <div>
+        <label>Expiry</label>
+        <input type="text" placeholder="MM/YY" disabled>
+      </div>
+
+      <div>
+        <label>CVV</label>
+        <input type="text" placeholder="123" disabled>
+      </div>
+    </div>
+  </div>
+</div>
 
             <div class="expiry-row">
-              <span>QR Expiry</span>
-              <strong id="qrTimer">04:59</strong>
+              <span>Order Ref</span>
+              <strong id="orderRefText">{{ order_ref }}</strong>
             </div>
           </div>
         </div>
@@ -172,7 +191,7 @@
         <div class="status-card">
           <div class="status-row">
             <span>Payment Status</span>
-            <strong class="pending" id="paymentStatus">Pending</strong>
+            <strong class="pending" id="paymentStatus">Pending Payment</strong>
           </div>
 
           <div class="status-row">
@@ -182,14 +201,43 @@
 
           <div class="status-row">
             <span>Reference ID</span>
-            <strong id="referenceId">TXN-000000</strong>
+            <strong id="referenceId">{{ order_ref }}</strong>
           </div>
         </div>
-        
 
-        <div class="payment-actions">
-          <button class="btn-start-small btn-hover" onclick="refreshQR()">Refresh QR</button>
-          <button class="btn-outline-green btn-hover" type="button" onclick="completePayment()">Pay Now</button>
+        <div class="mock-card-box" id="mockCardBox" style="display:none;">
+          <div class="mock-badge">Upcoming </div>
+
+          <label>Cardholder Name</label>
+          <input type="text" placeholder="Ali Khan" disabled>
+
+          <label>Card Number</label>
+          <input type="text" placeholder="4242 4242 4242 4242" disabled>
+
+          <div class="card-row">
+            <div>
+              <label>Expiry Date</label>
+              <input type="text" placeholder="MM/YY" disabled>
+            </div>
+
+            <div>
+              <label>CVV</label>
+              <input type="text" placeholder="123" disabled>
+            </div>
+          </div>
+
+          <p class="mock-note">
+            Card payments are currently upcoming.
+          </p>
+        </div>
+
+        <div class="manual-payment-box">
+          <label for="senderNumber">Sender Mobile Number</label>
+          <input type="text" id="senderNumber" placeholder="03XXXXXXXXX">
+
+          <button class="btn-outline-green btn-hover" type="button" onclick="submitPaymentInfo()">
+            I Have Paid
+          </button>
         </div>
       </aside>
 
@@ -202,11 +250,12 @@
       subtotal: {{ subtotal|tojson }},
       tax: {{ tax|tojson }},
       grandTotal: {{ grand_total|tojson }},
-      items: {{ items|tojson }}
+      items: {{ items|tojson }},
+      submitPaymentUrl: "/payment/submit-info",
+      statusUrl: "/payment/status/{{ order_ref }}"
     };
   </script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="{{ url_for('static', filename='checkout.js') }}"></script>
 </body>
 </html>

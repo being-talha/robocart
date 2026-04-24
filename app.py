@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, jsonify, session
 from db import get_db, close_db, init_db
 import os
-
+import json
+import uuid
+from datetime import datetime
+from flask import request, jsonify, render_template, redirect, url_for
 print("Using DB:", os.path.abspath("shopping_cart.db"))
 
 app = Flask(__name__)
@@ -29,6 +32,31 @@ def home():
 def shop():
     return render_template("index.html")
 
+
+PAYMENTS_FILE = "payments.json"
+
+
+def load_payments():
+    if not os.path.exists(PAYMENTS_FILE):
+        return []
+
+    with open(PAYMENTS_FILE, "r") as file:
+        return json.load(file)
+
+
+def save_payments(payments):
+    with open(PAYMENTS_FILE, "w") as file:
+        json.dump(payments, file, indent=4)
+
+
+def find_payment(order_ref):
+    payments = load_payments()
+
+    for payment in payments:
+        if payment["order_ref"] == order_ref:
+            return payment
+
+    return None
 
 @app.route("/search", methods=["POST"])
 def search():
@@ -157,15 +185,62 @@ def checkout_page():
     tax = round(subtotal * tax_rate, 2)
     grand_total = round(subtotal + tax, 2)
 
+    now = datetime.now()
+    order_ref = f"ORD-{uuid.uuid4().hex[:10].upper()}"
+
     return render_template(
         "checkout.html",
         items=cart_data["items"],
         subtotal=subtotal,
         tax=tax,
-        grand_total=grand_total
+        grand_total=grand_total,
+        current_date=now.strftime("%d %b %Y"),
+        current_time=now.strftime("%I:%M %p"),
+        order_ref=order_ref
     )
 
 
+@app.post("/payment/submit-info")
+def submit_payment_info():
+    data = request.get_json() or {}
+
+    order_ref = data.get("orderRef")
+    payment_method = data.get("paymentMethod")
+    sender_number = data.get("senderNumber")
+    amount = data.get("amount")
+
+    if not order_ref or not payment_method or not sender_number:
+        return jsonify({
+            "success": False,
+            "message": "Missing payment information."
+        }), 400
+
+    payments = load_payments()
+
+    existing = find_payment(order_ref)
+    if existing:
+        return jsonify({
+            "success": False,
+            "message": "Payment information already submitted for this order."
+        }), 400
+
+    payments.append({
+        "order_ref": order_ref,
+        "payment_method": payment_method,
+        "sender_number": sender_number,
+        "amount": amount,
+        "status": "PENDING_VERIFICATION",
+        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+    save_payments(payments)
+
+    return jsonify({
+        "success": True,
+        "message": "Payment submitted. Waiting for admin verification.",
+        "status": "PENDING_VERIFICATION"
+    })
+    
 @app.route("/complete-checkout", methods=["POST"])
 def complete_checkout():
     data = request.get_json()
@@ -236,6 +311,68 @@ def complete_checkout():
         "total": total
     })
 
+
+
+
+@app.get("/payment/status/<order_ref>")
+def payment_status(order_ref):
+    payment = find_payment(order_ref)
+
+    if not payment:
+        return jsonify({
+            "status": "PENDING_PAYMENT"
+        })
+
+    return jsonify({
+        "status": payment["status"]
+    })
+
+
+@app.route("/admin/payments")
+def admin_payments():
+    admin_key = request.args.get("key")
+
+    if admin_key != "12345":
+        return "Unauthorized", 403
+
+    payments = load_payments()
+
+    return render_template(
+        "admin_payments.html",
+        payments=payments
+    )
+
+
+@app.post("/admin/payment/approve/<order_ref>")
+def approve_payment(order_ref):
+    payments = load_payments()
+
+    for payment in payments:
+        if payment["order_ref"] == order_ref:
+            payment["status"] = "PAID"
+            payment["verified_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_payments(payments)
+            break
+
+    return redirect("/admin/payments?key=12345")
+
+
+@app.post("/admin/payment/reject/<order_ref>")
+def reject_payment(order_ref):
+    payments = load_payments()
+
+    for payment in payments:
+        if payment["order_ref"] == order_ref:
+            payment["status"] = "REJECTED"
+            payment["verified_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            save_payments(payments)
+            break
+
+    return redirect("/admin/payments?key=12345")
+
+@app.route("/thankyou/<order_ref>")
+def thankyou(order_ref):
+    return render_template("thankyou.html", order_ref=order_ref)
 
 if __name__ == "__main__":
     app.run(debug=True)

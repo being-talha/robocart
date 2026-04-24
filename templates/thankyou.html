@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You | RoboCart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #e6f6f3, #ffffff);
+    }
+
+    .thankyou-card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      width: 420px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 10px 0;
+      font-size: 28px;
+      color: #0f3d3e;
+      font-weight: 800;
+    }
+
+    p {
+      color: #6b7280;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .order-box {
+      background: #f0f7f6;
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .btn {
+      background: #0f3d3e;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="thankyou-card">
+    <div class="logo">🛒</div>
+
+    <h1>Thank You!</h1>
+
+    <p>Your payment has been successfully received.</p>
+
+    <div class="order-box">
+      Order ID: {{ order_ref }}
+    </div>
+
+    <p>We’re preparing your order. You’ll be notified soon.</p>
+
+    <button class="btn" onclick="window.location.href='/'">
+      Back to Home
+    </button>
+  </div>
+</body>
+</html>
