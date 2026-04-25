@@ -4,13 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart AI Cart POS</title>
-
+<link rel="stylesheet" href="{{ url_for('static', filename='coach.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 
 <body>
 <div class="app">
+
+    <div id="coachOverlay">
+    <div id="highlight"></div>
+
+    <div id="coachBox">
+        <h3 id="coachTitle"></h3>
+        <p id="coachText"></p>
+
+        <button onclick="nextStep()">Next</button>
+    </div>
+</div>
 
     <!-- LEFT SIDE -->
     <div class="left-side">
@@ -25,7 +36,7 @@
             </div>
             <div class="info-wrapper">
                 <h2 id="productName">Ready to Scan</h2>
-                <h3 id="productPrice">Rs 0</h3>
+                <h3 id="productPrice" style="display:none;">0</h3>
             </div>
         </div>
 
@@ -65,14 +76,16 @@
 
     <!-- RIGHT SIDE -->
     <div class="right-side">
-        <h2 class="cart-title">Your Cart</h2>
+        <h2 class="cart-title" id="cartIcon">Your Cart</h2>
         <div id="cartItems" class="cart-items"></div>
 
         <div class="bill">
             <div class="row"><span>Subtotal</span><strong id="subtotal">Rs 0</strong></div>
-            <div class="row"><span>Tax</span><strong id="tax">Rs 0</strong></div>
+            <div class="row"><span>Tax(5%)</span><strong id="tax">Rs 0</strong></div>
             <div class="row total"><span>Total</span><strong id="grandTotal">Rs 0</strong></div>
-            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+            <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">
+    Proceed to Checkout
+</button>
         </div>
     </div>
 </div>
@@ -122,7 +135,7 @@ function updateBill(cartData) {
     document.getElementById("tax").innerText = formatCurrency(tax);
     document.getElementById("grandTotal").innerText = formatCurrency(total);
 
-    // 🔥 render cart items
+    // render cart items
     const cartContainer = document.getElementById("cartItems");
     cartContainer.innerHTML = "";
 
@@ -227,7 +240,15 @@ window.onload = function() {
     resetProductView();
     loadCart();
     document.getElementById("barcode").focus();
+
+    // 👉 START COACH MARK (IMPORTANT)
+    if (localStorage.getItem("startTutorial") === "yes") {
+        startTutorial();
+        localStorage.removeItem("startTutorial");
+    }
 };
+
 </script>
+<script src="{{ url_for('static', filename='coach.js') }}"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 :root {
-  --bg:#f8fbfa;
+  --bg:#f0f7f9;
   --soft:#f0f7f6;
   --border:rgba(15,61,62,0.25);
   --text:#062f2c;
@@ -14,6 +14,7 @@
   --jazz:#b31217;
   --radius-lg:16px;
   --radius-md:12px;
+  --primary-green:#2d917e;
 }
 
 * {
@@ -61,8 +62,42 @@ body {
   overflow:hidden;
 }
 
-.bill-panel {
-  gap:10px;
+/* MAIN 2-COLUMN LAYOUT */
+.checkout-layout{
+  display: grid;
+  grid-template-columns: 460px 1fr; 
+  gap: 30px;
+  align-items: start;
+  max-width: 1400px;
+  margin: auto;
+  padding: 30px;
+}
+
+/* BILL PANEL WIDTH CONTROL */
+.bill-panel{
+  width: 100%;
+  max-width: 460px;     
+}
+
+.summary-card{
+  display: flex;
+  flex-direction: column;
+  flex: 1;     
+  min-height: 0;
+  background: var(--soft);
+}
+
+.bill-items{
+  flex: 1;             
+  overflow-y: auto;
+  margin-top: 10px;
+  padding-right: 6px;   
+}
+
+.bill-panel{
+  height: calc(100vh - 60px);   
+  display: flex;
+  flex-direction: column;
 }
 
 .payment-panel {
@@ -103,12 +138,15 @@ body {
   display:none;
 }
 
-.summary-card {
+.summary-card{
   background:#fff;
   border:1px solid var(--border);
   border-radius:var(--radius-lg);
   padding:12px;
   flex-shrink:0;
+
+  display:flex;
+  flex-direction:column;
 }
 
 .title-left {
@@ -186,10 +224,15 @@ body {
   margin:5px 0;
 }
 
-.totals-section {
-  display:flex;
-  flex-direction:column;
-  gap:4px;
+.totals-section{
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.totals-section{
+  border-top: 1px solid var(--border);
+  background: linear-gradient(to bottom, transparent, #f6fbf9);
 }
 
 .total-row {
@@ -224,20 +267,23 @@ body {
 /* ================= FEATURE CARDS ================= */
 
 .feature-cards {
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  flex-shrink:0;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap; /* allows wrapping on small screens */
 }
 
 .feature-card {
-  display:flex;
-  align-items:center;
-  gap:9px;
-  padding:8px 10px;
-  background:#f9fdfc;
-  border:1px solid rgba(15,61,62,0.08);
-  border-radius:12px;
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  background: var(--soft);
+  border: 1px solid rgba(15,61,62,0.08);
+  border-radius: 12px;
 }
 
 .feature-icon {
@@ -260,6 +306,8 @@ body {
   font-size:11px;
   color:var(--muted);
 }
+
+
 
 /* ================= RIGHT PANEL ================= */
 
@@ -368,21 +416,22 @@ body {
 }
 
 .qr-box {
-  width:100%;
-  height:145px;
-  border:1.5px dashed rgba(15,61,62,0.2);
-  background:#fff;
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+  width: fit-content;
+  height: fit-content;
+  padding: 10px;
+  border: 1.5px dashed rgba(15,61,62,0.2);
+  background: #fff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qr-box img {
-  max-width:125px;
-  max-height:125px;
+  max-width:180px;
+  max-height:180px;
   object-fit:contain;
+  display: block;
 }
 
 .expiry-row {
@@ -398,7 +447,7 @@ body {
 /* ================= STATUS ================= */
 
 .status-card {
-  background:#fff;
+  background: var(--soft);
   border:1px solid var(--border);
   border-radius:var(--radius-lg);
   padding:9px 12px;
@@ -438,7 +487,7 @@ body {
   width:100%;
   height:100%;
   padding:9px;
-  background:#fff;
+  background: var(--soft);
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -486,7 +535,7 @@ body {
 /* ================= MANUAL PAYMENT ================= */
 
 .manual-payment-box {
-  background:#fff;
+  background: var(--soft);
   border:1px solid #e5e7eb;
   border-radius:14px;
   padding:9px 12px;
@@ -519,28 +568,29 @@ body {
 .bill-actions {
   display:flex;
   gap:10px;
-  margin-top:auto;
+  margin-top:22px;
   flex-shrink:0;
 }
 
 .btn-outline-green,
 .btn-start-small {
-  padding:10px 22px;
-  font-size:14px;
+  padding:16px 28px;
+  font-size:16px;
   font-weight:800;
-  border-radius:999px;
+  border-radius:40px;
   cursor:pointer;
   flex:1;
+  height: 56px;
 }
 
 .btn-outline-green {
-  background:transparent;
-  color:var(--primary);
-  border:2px solid var(--primary);
+  background: transparent;
+  color: var(--primary-green);
+  border:2px solid var(--primary-green);
 }
 
 .btn-start-small {
-  background:var(--primary);
+  background: var(--primary-green);
   color:#fff;
   border:none;
 }
@@ -557,6 +607,8 @@ body {
 .btn-hover:active {
   transform:scale(.97);
 }
+
+
 
 /* ================= MODAL ================= */
 
