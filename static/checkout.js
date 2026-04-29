@@ -151,6 +151,61 @@ function closeBillModal() {
     document.getElementById("billModal").style.display = "none";
 }
 
+function pressKey(num) {
+  const input = document.getElementById("senderNumber");
+
+  if (input.value.length < 11) {
+    input.value += num;
+  }
+}
+
+function clearInput() {
+  document.getElementById("senderNumber").value = "";
+}
+
+function backspace() {
+  const input = document.getElementById("senderNumber");
+  input.value = input.value.slice(0, -1);
+}
+function openNumPad() {
+  const input = document.getElementById("senderNumber");
+  const display = document.getElementById("numpadDisplay");
+
+  display.innerText = input.value || "03XXXXXXXXX";
+  document.getElementById("numPadPopup").style.display = "flex";
+}
+
+function closeNumPad() {
+  document.getElementById("numPadPopup").style.display = "none";
+}
+
+function updateNumPadDisplay() {
+  const input = document.getElementById("senderNumber");
+  document.getElementById("numpadDisplay").innerText =
+    input.value || "03XXXXXXXXX";
+}
+
+function pressKey(num) {
+  const input = document.getElementById("senderNumber");
+
+  if (input.value.length < 11) {
+    input.value += num;
+  }
+
+  updateNumPadDisplay();
+}
+
+function clearInput() {
+  document.getElementById("senderNumber").value = "";
+  updateNumPadDisplay();
+}
+
+function backspace() {
+  const input = document.getElementById("senderNumber");
+  input.value = input.value.slice(0, -1);
+  updateNumPadDisplay();
+}
+
 function printBill() {
     const billContent = document.getElementById("billReceipt").innerHTML;
 

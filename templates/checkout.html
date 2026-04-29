@@ -203,17 +203,43 @@
           </p>
         </div>
 
-        <div class="manual-payment-box">
-          <label for="senderNumber">Sender Mobile Number</label>
-          <input
-  type="tel"
-  id="senderNumber"
-  placeholder="03XXXXXXXXX"
-  inputmode="numeric"
-  pattern="[0-9]*"
-  autocomplete="tel"
->
-        </div>
+       <div class="manual-payment-box">
+  <label for="senderNumber">Sender Mobile Number</label>
+  <input
+    type="text"
+    id="senderNumber"
+    placeholder="03XXXXXXXXX"
+    maxlength="11"
+    readonly
+    onclick="openNumPad()"
+  >
+</div>
+
+<div id="numPadPopup" class="numpad-popup">
+  <div class="numpad-box">
+    <div class="numpad-display" id="numpadDisplay">03XXXXXXXXX</div>
+
+    <div class="numpad-grid">
+      <button type="button" onclick="pressKey('1')">1</button>
+      <button type="button" onclick="pressKey('2')">2</button>
+      <button type="button" onclick="pressKey('3')">3</button>
+
+      <button type="button" onclick="pressKey('4')">4</button>
+      <button type="button" onclick="pressKey('5')">5</button>
+      <button type="button" onclick="pressKey('6')">6</button>
+
+      <button type="button" onclick="pressKey('7')">7</button>
+      <button type="button" onclick="pressKey('8')">8</button>
+      <button type="button" onclick="pressKey('9')">9</button>
+
+      <button type="button" onclick="clearInput()">C</button>
+      <button type="button" onclick="pressKey('0')">0</button>
+      <button type="button" onclick="backspace()">⌫</button>
+    </div>
+
+    <button type="button" class="numpad-done" onclick="closeNumPad()">Done</button>
+  </div>
+</div>
 
           <button class="btn-outline-green btn-hover pay-btn" type="button" onclick="submitPaymentInfo()">
           I Have Paid
