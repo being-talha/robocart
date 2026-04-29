@@ -205,7 +205,14 @@
 
         <div class="manual-payment-box">
           <label for="senderNumber">Sender Mobile Number</label>
-          <input type="text" id="senderNumber" placeholder="03XXXXXXXXX">
+          <input
+  type="tel"
+  id="senderNumber"
+  placeholder="03XXXXXXXXX"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="tel"
+>
         </div>
 
           <button class="btn-outline-green btn-hover pay-btn" type="button" onclick="submitPaymentInfo()">
