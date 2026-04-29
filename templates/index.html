@@ -4,24 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart AI Cart POS</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='coach.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 
 <body>
 <div class="app">
-
-    <div id="coachOverlay">
-    <div id="highlight"></div>
-
-    <div id="coachBox">
-        <h3 id="coachTitle"></h3>
-        <p id="coachText"></p>
-
-        <button onclick="nextStep()">Next</button>
-    </div>
-</div>
 
     <!-- LEFT SIDE -->
     <div class="left-side">
@@ -121,8 +109,7 @@ function resetProductView() {
     currentProduct = null;
     document.getElementById("productName").innerText = "Ready to Scan";
     document.getElementById("productPrice").innerText = "Rs 0";
-    document.getElementById("productImage").src =
-        "https://via.placeholder.com/260x220?text=Scan+Item";
+    document.getElementById("productImage").src ="https://via.placeholder.com/260x220?text=Scan+Item";
 }
 
 /* BILL + CART RENDER */
@@ -241,11 +228,6 @@ window.onload = function() {
     loadCart();
     document.getElementById("barcode").focus();
 
-    // 👉 START COACH MARK (IMPORTANT)
-    if (localStorage.getItem("startTutorial") === "yes") {
-        startTutorial();
-        localStorage.removeItem("startTutorial");
-    }
 };
 
 </script>

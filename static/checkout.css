@@ -55,11 +55,17 @@ body {
 
 .bill-panel,
 .payment-panel {
-  height:100%;
+  height:auto;
   min-height:0;
   display:flex;
   flex-direction:column;
   overflow:hidden;
+}
+
+.payment-panel {
+  height: auto !important;
+  overflow: visible !important;
+  padding-bottom: 40px; 
 }
 
 /* MAIN 2-COLUMN LAYOUT */
@@ -274,40 +280,6 @@ body {
   flex-wrap: wrap; /* allows wrapping on small screens */
 }
 
-.feature-card {
-  flex: 1;
-  min-width: 180px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 8px 10px;
-  background: var(--soft);
-  border: 1px solid rgba(15,61,62,0.08);
-  border-radius: 12px;
-}
-
-.feature-icon {
-  width:32px;
-  height:32px;
-  border-radius:9px;
-  background:var(--accent-soft);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
-}
-
-.feature-card strong {
-  font-size:13px;
-  font-weight:700;
-}
-
-.feature-card p {
-  font-size:11px;
-  color:var(--muted);
-}
-
-
 
 /* ================= RIGHT PANEL ================= */
 
@@ -434,15 +406,6 @@ body {
   display: block;
 }
 
-.expiry-row {
-  width:100%;
-  font-size:13px;
-  font-weight:700;
-}
-
-.expiry-row strong {
-  color:var(--primary);
-}
 
 /* ================= STATUS ================= */
 
@@ -459,12 +422,12 @@ body {
 }
 
 .status-row span {
-  font-size:12px;
+  font-size:14px;
   color:#6B7280;
 }
 
 .status-row strong {
-  font-size:12px;
+  font-size:14px;
   font-weight:800;
 }
 
@@ -552,10 +515,11 @@ body {
 }
 
 .manual-payment-box input {
-  padding:8px 11px;
-  border:1px solid #d1d5db;
-  border-radius:9px;
-  font-size:13px;
+  height: 60px;        
+  font-size: 16px;     
+  padding: 0 16px;     
+  border-radius: 12px; 
+  width: 100%;       /
 }
 
 .manual-payment-box input:focus {
@@ -583,11 +547,13 @@ body {
   height: 56px;
 }
 
+
 .btn-outline-green {
   background: transparent;
   color: var(--primary-green);
   border:2px solid var(--primary-green);
 }
+
 
 .btn-start-small {
   background: var(--primary-green);
@@ -704,3 +670,19 @@ body {
     max-height:none;
   }
 }
+
+  .pay-btn {
+  padding: 16px 28px;
+  height: 56px;
+  font-size: 16px;
+  font-weight:800;
+  width: 250px;
+  border-radius: 40px;
+  flex:1;  
+  display: block;
+  margin:  auto;
+  background: var(--primary-green);
+  color:#fff;
+  border:none;
+}
+
