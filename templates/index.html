@@ -65,10 +65,9 @@
         <div id="cartItems" class="cart-items"></div>
 
         <div class="bill">
-
-    <button class="clear-cart-btn" onclick="clearCart()">
-        Clear Cart
-    </button>
+<button type="button" class="clear-cart-btn" onclick="clearCart()">
+    Clear Cart
+</button>
 
     <div class="row"><span>Subtotal</span><strong id="subtotal">Rs 0</strong></div>
     <div class="row"><span>Tax(5%)</span><strong id="tax">Rs 0</strong></div>
@@ -150,10 +149,13 @@ function clearCart() {
     .then(data => {
         updateBill(data);
         resetProductView();
+
+        const barcodeInput = document.getElementById("barcode");
+        barcodeInput.value = "";
+        barcodeInput.focus();
     })
     .catch(err => console.error("Clear cart error:", err));
 }
-
 function loadCart() {
     fetch("/cart")
         .then(res => res.json())
