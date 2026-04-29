@@ -32,10 +32,10 @@ function selectMethod(method) {
     qrImage.src = "/static/payments/easypaisa-qr.png";
   }
 
-  if (method === "jazzcash") {
+  if (method === "meezan") {
     jazzBtn.classList.add("active");
-    selectedMethodText.textContent = "JazzCash";
-    qrImage.src = "/static/payments/jazzcash-qr.png";
+    selectedMethodText.textContent = "Meezab";
+    qrImage.src = "/static/payments/meezan-qr.png";
   }
 
   if (method === "card") {
@@ -139,9 +139,57 @@ function closeCustomModal() {
 }
 
 function goBack() {
-  window.location.href = "/cart";
+    sessionStorage.setItem("fromCheckout", "true");
+    window.location.href = "/shop";
 }
 
-function downloadBill() {
-  window.print();
+function viewBill() {
+    document.getElementById("billModal").style.display = "flex";
+}
+
+function closeBillModal() {
+    document.getElementById("billModal").style.display = "none";
+}
+
+function printBill() {
+    const billContent = document.getElementById("billReceipt").innerHTML;
+
+    const printWindow = window.open("", "", "width=400,height=600");
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Bill Receipt</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    padding: 20px;
+                }
+
+                h2 {
+                    text-align: center;
+                }
+
+                p {
+                    font-size: 14px;
+                    line-height: 1.5;
+                }
+
+                hr {
+                    border: none;
+                    border-top: 1px solid #ccc;
+                    margin: 12px 0;
+                }
+            </style>
+        </head>
+        <body>
+            <h2>RoboCart Bill</h2>
+            ${billContent}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
 }

@@ -2,84 +2,184 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thank You | RoboCart</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    * {
       margin: 0;
-      height: 100vh;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, #e6f6f3, #ffffff);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: "Inter", sans-serif;
-      background: linear-gradient(135deg, #e6f6f3, #ffffff);
+      padding: 24px;
+      color: #062f2c;
     }
 
     .thankyou-card {
+      width: 100%;
+      max-width: 460px;
       background: #ffffff;
-      padding: 40px;
-      border-radius: 20px;
+      border-radius: 24px;
+      padding: 38px 34px;
       text-align: center;
-      width: 420px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      box-shadow: 0 25px 60px rgba(15, 61, 62, 0.14);
+      border: 1px solid rgba(15, 61, 62, 0.12);
     }
 
     .logo {
-      font-size: 40px;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
     }
 
-    h1 {
-      margin: 10px 0;
-      font-size: 28px;
-      color: #0f3d3e;
+    .logo img {
+      width: 86px;
+      height: 86px;
+      object-fit: contain;
+      border-radius: 18px;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
       font-weight: 800;
     }
 
-    p {
+    h1 {
+      font-size: 30px;
+      font-weight: 800;
+      color: #0f3d3e;
+      margin-bottom: 10px;
+    }
+
+    .message {
+      font-size: 15px;
+      line-height: 1.6;
       color: #6b7280;
-      font-size: 14px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
 
     .order-box {
       background: #f0f7f6;
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 20px;
+      border: 1px solid rgba(15, 61, 62, 0.12);
+      padding: 14px;
+      border-radius: 16px;
+      margin-bottom: 22px;
+    }
+
+    .order-box span {
+      display: block;
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 4px;
       font-weight: 600;
     }
 
+    .order-box strong {
+      font-size: 16px;
+      color: #0f3d3e;
+      font-weight: 800;
+    }
+
+    .info-text {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+
     .btn {
-      background: #0f3d3e;
-      color: white;
-      padding: 12px 20px;
+      flex: 1;
+      padding: 13px 18px;
       border-radius: 999px;
       border: none;
       cursor: pointer;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: #0f3d3e;
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #0f3d3e;
+      border: 2px solid #0f3d3e;
+    }
+
+    @media (max-width: 480px) {
+      .thankyou-card {
+        padding: 30px 22px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
     }
   </style>
 </head>
 
 <body>
   <div class="thankyou-card">
-    <div class="logo">🛒</div>
+
+    <div class="logo">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="RoboCart Logo">
+    </div>
+
+    <div class="success-icon">✓</div>
 
     <h1>Thank You!</h1>
 
-    <p>Your payment has been successfully received.</p>
+    <p class="message">
+      Your payment has been approved successfully. RoboCart has received your order and it is now being prepared.
+    </p>
 
     <div class="order-box">
-      Order ID: {{ order_ref }}
+      <span>Order Reference</span>
+      <strong>{{ order_ref }}</strong>
     </div>
 
+    <p class="info-text">
+      Please keep this order reference for support or order verification.
+    </p>
 
+    <div class="actions">
+      <a href="/" class="btn btn-primary">Back to Home</a>
+      <button class="btn btn-outline" onclick="window.print()">Print Receipt</button>
+    </div>
 
-    <button class="btn" onclick="window.location.href='/'">
-      Back to Home
-    </button>
   </div>
 </body>
 </html>

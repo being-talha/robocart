@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect
 from db import get_db, close_db, init_db
 import os
 import json
 import uuid
 from datetime import datetime
-from flask import request, jsonify, render_template, redirect, url_for
+
 print("Using DB:", os.path.abspath("shopping_cart.db"))
 
 app = Flask(__name__)
@@ -58,6 +58,7 @@ def find_payment(order_ref):
 
     return None
 
+
 @app.route("/search", methods=["POST"])
 def search():
     data = request.get_json()
@@ -89,6 +90,13 @@ def get_session_cart():
     if "cart" not in session:
         session["cart"] = {}
     return session["cart"]
+
+
+@app.route("/clear-cart", methods=["POST"])
+def clear_cart():
+    session["cart"] = {}
+    session.modified = True
+    return jsonify(build_cart_response())
 
 
 @app.route("/add", methods=["POST"])
@@ -241,7 +249,8 @@ def submit_payment_info():
         "message": "Payment submitted. Waiting for admin verification.",
         "status": "PENDING_VERIFICATION"
     })
-    
+
+
 @app.route("/complete-checkout", methods=["POST"])
 def complete_checkout():
     data = request.get_json()
@@ -314,8 +323,6 @@ def complete_checkout():
     })
 
 
-
-
 @app.get("/payment/status/<order_ref>")
 def payment_status(order_ref):
     payment = find_payment(order_ref)
@@ -356,8 +363,8 @@ def approve_payment(order_ref):
             save_payments(payments)
             break
 
-    # clear cart after payment approval
-    cart.clear()
+    session["cart"] = {}
+    session.modified = True
 
     return redirect("/admin/payments?key=12345")
 
@@ -375,10 +382,12 @@ def reject_payment(order_ref):
 
     return redirect("/admin/payments?key=12345")
 
+
 @app.route("/thankyou")
 def thankyou():
     order_ref = request.args.get("orderRef", "N/A")
     return render_template("thankyou.html", order_ref=order_ref)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

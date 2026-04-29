@@ -310,67 +310,66 @@ body {
 }
 
 .method-card {
-  height:54px;
-  display:flex;
-  align-items:center;
-  border:1px solid var(--border);
-  background:var(--soft);
-  border-radius:14px;
-  padding:7px;
-  gap:6px;
-  cursor:pointer;
-  transition:.2s;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  background: var(--soft);
+  border-radius: 15px;
+  padding: 10px;
+  gap: 10px;
+  cursor: pointer;
+  transition: .2s;
 }
 
 .method-card.active {
-  border:2px solid var(--primary);
-  background:var(--accent-soft);
+  border: 2px solid var(--primary);
+  background: var(--accent-soft);
 }
 
 .method-logo {
-  min-width:28px;
-  width:28px;
-  height:28px;
-  border-radius:9px;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  font-weight:800;
+  min-width: 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .method-logo.easy {
-  background:var(--easy);
+  background: var(--easy);
 }
 
 .method-logo.jazz {
-  background:var(--jazz);
+  background: var(--jazz);
 }
 
 .method-logo.card {
-  background:#111827;
+  background: #111827;
 }
 
 .method-info {
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  min-width:0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
 }
 
 .method-info strong {
-  font-size:12px;
-  font-weight:700;
-  line-height:1.1;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.15;
 }
 
 .method-info span {
-  font-size:10px;
-  color:#6B7280;
-  line-height:1.1;
+  font-size: 12px;
+  color: #6B7280;
+  line-height: 1.15;
 }
-
 .qr-area {
   display:flex;
   flex-direction:column;
@@ -686,3 +685,8 @@ body {
   border:none;
 }
 
+.bill-btns {
+    display: flex;
+    gap: 10px; /* controls space between buttons */
+    margin-top: 15px;
+}

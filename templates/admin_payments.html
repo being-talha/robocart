@@ -1,185 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thank You | RoboCart</title>
+    <title>Admin Payments</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            padding: 30px;
+        }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        h1 {
+            margin-bottom: 20px;
+        }
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+        }
 
-    body {
-      min-height: 100vh;
-      font-family: "Inter", sans-serif;
-      background: linear-gradient(135deg, #e6f6f3, #ffffff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      color: #062f2c;
-    }
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
 
-    .thankyou-card {
-      width: 100%;
-      max-width: 460px;
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 38px 34px;
-      text-align: center;
-      box-shadow: 0 25px 60px rgba(15, 61, 62, 0.14);
-      border: 1px solid rgba(15, 61, 62, 0.12);
-    }
+        th {
+            background: #111827;
+            color: white;
+        }
 
-    .logo {
-      margin-bottom: 16px;
-    }
+        .pending {
+            color: #d97706;
+            font-weight: bold;
+        }
 
-    .logo img {
-      width: 86px;
-      height: 86px;
-      object-fit: contain;
-      border-radius: 18px;
-    }
+        .paid {
+            color: #16a34a;
+            font-weight: bold;
+        }
 
-    .success-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 18px;
-      border-radius: 50%;
-      background: #dcfce7;
-      color: #16a34a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 34px;
-      font-weight: 800;
-    }
+        .rejected {
+            color: #dc2626;
+            font-weight: bold;
+        }
 
-    h1 {
-      font-size: 30px;
-      font-weight: 800;
-      color: #0f3d3e;
-      margin-bottom: 10px;
-    }
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
 
-    .message {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #6b7280;
-      margin-bottom: 22px;
-    }
+        .approve {
+            background: #16a34a;
+        }
 
-    .order-box {
-      background: #f0f7f6;
-      border: 1px solid rgba(15, 61, 62, 0.12);
-      padding: 14px;
-      border-radius: 16px;
-      margin-bottom: 22px;
-    }
+        .reject {
+            background: #dc2626;
+        }
 
-    .order-box span {
-      display: block;
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-
-    .order-box strong {
-      font-size: 16px;
-      color: #0f3d3e;
-      font-weight: 800;
-    }
-
-    .info-text {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 24px;
-    }
-
-    .actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 13px 18px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 800;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .btn-primary {
-      background: #0f3d3e;
-      color: white;
-    }
-
-    .btn-outline {
-      background: transparent;
-      color: #0f3d3e;
-      border: 2px solid #0f3d3e;
-    }
-
-    @media (max-width: 480px) {
-      .thankyou-card {
-        padding: 30px 22px;
-      }
-
-      .actions {
-        flex-direction: column;
-      }
-
-      h1 {
-        font-size: 26px;
-      }
-    }
-  </style>
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+    </style>
 </head>
 
 <body>
-  <div class="thankyou-card">
+    <h1>Admin Payment Panel</h1>
 
-    <div class="logo">
-      <img src="{{ url_for('static', filename='logo.png') }}" alt="RoboCart Logo">
-    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Order Ref</th>
+                <th>Payment Method</th>
+                <th>Sender Number</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Verified At</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-    <div class="success-icon">✓</div>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.order_ref }}</td>
+                <td>{{ payment.payment_method }}</td>
+                <td>{{ payment.sender_number }}</td>
+                <td>Rs {{ payment.amount }}</td>
 
-    <h1>Thank You!</h1>
+                <td>
+                    {% if payment.status == "PAID" %}
+                        <span class="paid">PAID</span>
+                    {% elif payment.status == "REJECTED" %}
+                        <span class="rejected">REJECTED</span>
+                    {% else %}
+                        <span class="pending">PENDING</span>
+                    {% endif %}
+                </td>
 
-    <p class="message">
-      Your payment has been approved successfully. RoboCart has received your order and it is now being prepared.
-    </p>
+                <td>{{ payment.created_at }}</td>
+                <td>{{ payment.verified_at if payment.verified_at else "-" }}</td>
 
-    <div class="order-box">
-      <span>Order Reference</span>
-      <strong>{{ order_ref }}</strong>
-    </div>
+                <td>
+                    {% if payment.status == "PENDING_VERIFICATION" %}
+                    <div class="actions">
+                        <form method="POST" action="/admin/payment/approve/{{ payment.order_ref }}">
+                            <button class="approve" type="submit">Approve</button>
+                        </form>
 
-    <p class="info-text">
-      Please keep this order reference for support or order verification.
-    </p>
-
-    <div class="actions">
-      <a href="/" class="btn btn-primary">Back to Home</a>
-      <button class="btn btn-outline" onclick="window.print()">Print Receipt</button>
-    </div>
-
-  </div>
+                        <form method="POST" action="/admin/payment/reject/{{ payment.order_ref }}">
+                            <button class="reject" type="submit">Reject</button>
+                        </form>
+                    </div>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

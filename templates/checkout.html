@@ -85,7 +85,7 @@
 
         <div class="bill-actions">
           <button class="btn-start-small btn-hover" onclick="goBack()">Back to Cart</button>
-          <button class="btn-outline-green btn-hover" type="button" onclick="downloadBill()">Generate Bill</button>
+          <button class="btn-outline-green btn-hover" type="button" onclick="viewBill()">View Bill</button>
         </div>
       </section>
 
@@ -104,10 +104,10 @@
               </div>
             </button>
 
-            <button class="method-card" id="jazzBtn" type="button" onclick="selectMethod('jazzcash')">
-              <div class="method-logo jazz">JC</div>
+            <button class="method-card" id="jazzBtn" type="button" onclick="selectMethod('meezan')">
+              <div class="method-logo jazz">MB</div>
               <div class="method-info">
-                <strong>JazzCash</strong>
+                <strong>Meezan</strong>
                 <span>Scan QR and pay</span>
               </div>
             </button>
@@ -229,5 +229,38 @@
   </script>
 
   <script src="{{ url_for('static', filename='checkout.js') }}"></script>
+
+  <div id="billModal" class="custom-modal">
+  <div class="custom-modal-box" style="max-width:420px;">
+    <h3>Bill Receipt</h3>
+
+    <div id="billReceipt">
+      <p><strong>Reference ID:</strong> {{ order_ref }}</p>
+      <p><strong>Date:</strong> {{ current_date }}</p>
+      <p><strong>Time:</strong> {{ current_time }}</p>
+
+      <hr>
+
+      {% for item in items %}
+      <p>
+        {{ item.name }} — {{ item.qty }} × Rs {{ item.price }}
+        <br>
+        <strong>Rs {{ item.subtotal }}</strong>
+      </p>
+      {% endfor %}
+
+      <hr>
+
+      <p><strong>Subtotal:</strong> Rs {{ subtotal }}</p>
+      <p><strong>Tax:</strong> Rs {{ tax }}</p>
+      <p><strong>Total:</strong> Rs {{ grand_total }}</p>
+    </div>
+    <div class="bill-btns">
+    <button type="button" onclick="printBill()">Print</button>
+    <button type="button" onclick="closeBillModal()">Close</button>
+</div>
+  </div>
+</div>
+
 </body>
 </html>
