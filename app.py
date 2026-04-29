@@ -61,7 +61,7 @@ def find_payment(order_ref):
 @app.route("/search", methods=["POST"])
 def search():
     data = request.get_json()
-    barcode = data.get("barcode", "").strip()
+    barcode = str(data.get("barcode", "")).strip()
 
     if not barcode:
         return jsonify({"status": "error", "message": "Barcode is required"}), 400
@@ -94,7 +94,7 @@ def get_session_cart():
 @app.route("/add", methods=["POST"])
 def add():
     data = request.get_json()
-    barcode = data.get("barcode")
+    barcode = data.get("barcode", "").strip()
 
     if not barcode:
         return jsonify({"status": "error", "message": "Barcode is required"}), 400
@@ -130,7 +130,7 @@ def add():
 @app.route("/remove", methods=["POST"])
 def remove():
     data = request.get_json()
-    barcode = data.get("barcode")
+    barcode = str(data.get("barcode", "")).strip()
 
     if not barcode:
         return jsonify({"status": "error", "message": "Barcode is required"}), 400
@@ -166,6 +166,7 @@ def build_cart_response():
             "barcode": item["barcode"],
             "name": item["name"],
             "price": item["price"],
+            "image": item["image"],
             "qty": item["qty"],
             "subtotal": subtotal
         })
@@ -257,6 +258,7 @@ def complete_checkout():
     total = 0
 
     for barcode, item in cart.items():
+        barcode = str(barcode).strip()
         cur.execute("SELECT * FROM products WHERE barcode = ?", (barcode,))
         product = cur.fetchone()
 

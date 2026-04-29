@@ -11,7 +11,10 @@ products = [
     ("1845", "Apple", 199, "apple.png", 20),   # E.g., changed price to 110
     ("456", "Milk", 250, "milk.jpg", 15),
     ("789", "Bread", 150, "bread.jpg", 10),
-    ("999", "Eggs", 300, "eggs.jpg", 30)       # Added a new item
+    ("999", "Eggs", 300, "eggs.jpg", 30),
+    ("8991111101316", "Johnson's Baby Oil", 450, "johnson-baby-oil.png", 50),
+    ("8964000061534", "Young's Chicken Spread",310, "chicken-spread.png", 20),
+    ("6920247173227", "Rhode Lip tint",500, "rhode-lip-tint.png", 20)     
 ]
 
 # The Upsert Query
@@ -34,3 +37,4 @@ for row in cur.fetchall():
 
 conn.close()
 print("Database updated successfully!")
+

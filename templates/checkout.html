@@ -81,31 +81,7 @@
           </div>
         </div>
 
-        <div class="feature-cards">
-          <div class="feature-card">
-            <div class="feature-icon">🛡️</div>
-            <div>
-              <strong>Secure Payment</strong>
-              <p>Payment verified by admin</p>
-            </div>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <div>
-              <strong>Real Transfer</strong>
-              <p>Pay using wallet QR</p>
-            </div>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">🎧</div>
-            <div>
-              <strong>24/7 Support</strong>
-              <p>We’re here to help</p>
-            </div>
-          </div>
-        </div>
+        
 
         <div class="bill-actions">
           <button class="btn-start-small btn-hover" onclick="goBack()">Back to Cart</button>
@@ -181,10 +157,6 @@
   </div>
 </div>
 
-            <div class="expiry-row">
-              <span>Order Ref</span>
-              <strong id="orderRefText">{{ order_ref }}</strong>
-            </div>
           </div>
         </div>
 
@@ -234,11 +206,11 @@
         <div class="manual-payment-box">
           <label for="senderNumber">Sender Mobile Number</label>
           <input type="text" id="senderNumber" placeholder="03XXXXXXXXX">
-
-          <button class="btn-outline-green btn-hover" type="button" onclick="submitPaymentInfo()">
-            I Have Paid
-          </button>
         </div>
+
+          <button class="btn-outline-green btn-hover pay-btn" type="button" onclick="submitPaymentInfo()">
+          I Have Paid
+        </button>
       </aside>
 
     </div>

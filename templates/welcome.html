@@ -43,9 +43,11 @@
         </p>
 
       <div class="action-zone side-by-side">
-    <a href="{{ url_for('shop') }}" class="btn-start-small">
-        <i class="fas fa-shopping-basket"></i> Start Shopping
-    </a>
+    <a href="{{ url_for('shop') }}"
+   class="btn-start-small"
+   onclick="localStorage.setItem('startTutorial','yes')">
+   <i class="fas fa-shopping-basket"></i> Start Shopping
+</a>
     <button class="btn-demo-outline">
         <i class="fas fa-play-circle"></i> Watch Demo
     </button>
@@ -58,20 +60,20 @@
 
         <div class="card fade-in-up">
             <i class="fas fa-shield-halved"></i>
+            <h3>Autonomous Cart</h3>
+            <p class="card-text">Cart automatically detects and adds products</p>
+        </div>
+
+        <div class="card fade-in-up">
+            <i class="fas fa-brain"></i>
             <h3>Secure Pay</h3>
             <p class="card-text">Safe & encrypted payments</p>
         </div>
 
         <div class="card fade-in-up">
-            <i class="fas fa-brain"></i>
-            <h3>AI Powered</h3>
-            <p class="card-text">Smart product suggestions</p>
-        </div>
-
-        <div class="card fade-in-up">
             <i class="fas fa-barcode"></i>
-            <h3>Quick Scan</h3>
-            <p class="card-text">Instant barcode recognition</p>
+            <h3>AI Assistive System</h3>
+            <p class="card-text">Helps users with navigation & suggestions</p>
         </div>
 
     </section>
