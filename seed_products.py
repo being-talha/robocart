@@ -8,26 +8,28 @@ conn = sqlite3.connect(db_path)
 cur = conn.cursor()
 
 products = [
-    ("1845", "Apple", 199, "apple.png", 20),   # E.g., changed price to 110
-    ("456", "Milk", 250, "milk.png", 15),
-    ("789", "Bread", 150, "bread.jpg", 10),
-    ("999", "Eggs", 300, "eggs.jpg", 30),
-    ("8991111101316", "Johnson's Baby Oil", 450, "johnson-baby-oil.png", 50),
-    ("8964000061534", "Young's Chicken Spread",310, "chicken-spread.png", 20),
-    ("6920247173227", "Rhode Lip tint",500, "rhode-lip-tint.png", 20),
-    ("8964003594084", "Peek Frean's Cake Up", 40, "cupcake.png", 30),  
-    ("8961003652318", "Oreo Chocolate", 30, "oreo.png", 30),
+    ("1845", "Apple", 199, 100, "apple.png", 20),   # E.g., changed price to 110
+    ("456", "Milk", 250, 200, "milk.png", 15),
+    ("789", "Bread", 150, 150, "bread.jpg", 10),
+    ("999", "Eggs", 300, 300, "eggs.jpg", 30),
+    ("8991111101316", "Johnson's Baby Oil", 450, 400, "johnson-baby-oil.png", 50),
+    ("8964000061534", "Young's Chicken Spread",310, 350, "chicken-spread.png", 20),
+    ("6920247173227", "Rhode Lip tint",500, 500, "rhode-lip-tint.png", 20),
+    ("8964003594084", "Peek Frean's Cake Up", 40, 40, "cupcake.png", 30),  
+    ("8961003652318", "Oreo Chocolate", 30, 30, "oreo.png", 30),
+    ("8961003679759", "LU Candi Biscuit", 40, 25, "candi.png", 30),
     
       
 ]
 
 # The Upsert Query
 cur.executemany("""
-    INSERT INTO products (barcode, name, price, image, stock)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO products (barcode, name, price, expected_weight, image, stock)
+    VALUES (?, ?, ?, ?, ?, ?)
     ON CONFLICT(barcode) DO UPDATE SET
         name = excluded.name,
         price = excluded.price,
+        expected_weight = excluded.expected_weight,
         image = excluded.image,
         stock = excluded.stock
 """, products)

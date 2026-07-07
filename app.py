@@ -83,7 +83,8 @@ def search():
             "name": product["name"],
             "price": product["price"],
             "image": product["image"],
-            "stock": product["stock"]
+            "stock": product["stock"],
+            "expected_weight": product["expected_weight"]
         })
 
     return jsonify({"status": "not_found"})
@@ -129,7 +130,11 @@ def add():
         "name": product["name"],
         "price": product["price"],
         "image": product["image"],
-        "qty": current_qty + 1
+        "qty": current_qty + 1,
+        "expected_weight": product["expected_weight"],
+
+    
+        "measured_weight": product["expected_weight"] + 3
     }
 
     session["cart"] = cart
@@ -179,6 +184,9 @@ def build_cart_response():
             "price": item["price"],
             "image": item["image"],
             "qty": item["qty"],
+            "expected_weight": item["expected_weight"],
+            "measured_weight": item["measured_weight"],
+
             "subtotal": subtotal
         })
 

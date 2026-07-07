@@ -168,7 +168,24 @@ function updateBill(cartData) {
                 <img src="/static/images/${item.image}" width="50">
                 <div class="cart-info">
                     <strong>${item.name}</strong>
-                    <small>${formatCurrency(item.price)} x ${item.qty}</small>
+
+                    <small>
+                    Expected: ${item.expected_weight} g
+                    </small>
+
+                    <small>
+                    Measured: ${item.measured_weight} g
+                    </small>
+
+                    <small>
+                    ${
+                    Math.abs(item.expected_weight-item.measured_weight)<=10
+                    ?
+                    "✅"
+                    :
+                    "🚨 Weight Mismatch"
+                    }
+                    </small>
                 </div>
                 <div class="cart-total">
                     ${formatCurrency(item.price * item.qty)}
