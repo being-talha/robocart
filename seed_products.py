@@ -9,7 +9,7 @@ cur = conn.cursor()
 
 products = [
     ("1845", "Apple", 199, "apple.png", 20),   # E.g., changed price to 110
-    ("456", "Milk", 250, "milk.jpg", 15),
+    ("456", "Milk", 250, "milk.png", 15),
     ("789", "Bread", 150, "bread.jpg", 10),
     ("999", "Eggs", 300, "eggs.jpg", 30),
     ("8991111101316", "Johnson's Baby Oil", 450, "johnson-baby-oil.png", 50),

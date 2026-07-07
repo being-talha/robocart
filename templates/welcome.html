@@ -42,16 +42,15 @@
             Experience seamless, AI-driven grocery shopping like never before.
         </p>
 
-      <div class="action-zone side-by-side">
-    <a href="{{ url_for('shop') }}"
-   class="btn-start-small"
-   onclick="localStorage.setItem('startTutorial','yes')">
-   <i class="fas fa-shopping-basket"></i> Start Shopping
-</a>
-    <button class="btn-demo-outline">
+    <div class="action-zone side-by-side">
+    <a href="{{ url_for('shop') }}" class="btn-start-small" onclick="localStorage.setItem('startTutorial','yes')">
+        <i class="fas fa-shopping-basket"></i> Start Shopping
+    </a>
+    
+    <a href="{{ url_for('demo') }}" class="btn-demo-outline" style="text-decoration: none;">
         <i class="fas fa-play-circle"></i> Watch Demo
-    </button>
-</div>
+    </a>
+    </div>
 
     </section>
 
@@ -59,21 +58,21 @@
     <section class="features-row">
 
         <div class="card fade-in-up">
-            <i class="fas fa-shield-halved"></i>
+            <i class="fas fa-cart-flatbed-suitcase"></i>
             <h3>Autonomous Cart</h3>
-            <p class="card-text">Cart automatically detects and adds products</p>
+            <p class="card-text">Cart automatically follows you while you shop</p>
         </div>
 
         <div class="card fade-in-up">
-            <i class="fas fa-brain"></i>
-            <h3>Secure Pay</h3>
-            <p class="card-text">Safe & encrypted payments</p>
+            <i class="fas fa-microchip"></i>
+            <h3>Product Detection</h3>
+            <p class="card-text">Cart automatically identifies and logs products as you add them</p>
         </div>
 
         <div class="card fade-in-up">
-            <i class="fas fa-barcode"></i>
-            <h3>AI Assistive System</h3>
-            <p class="card-text">Helps users with navigation & suggestions</p>
+            <i class="fas fa-handshake-angle"></i>
+            <h3>Assistive Mobility</h3>
+            <p class="card-text">Eliminates manual pushing and features smart assistance for disabled shoppers</p>
         </div>
 
     </section>

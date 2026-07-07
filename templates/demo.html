@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RoboCart | Interactive Demo Flow</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #2d917e;
+            --bg-main: #f0f7f9;
+            --text-dark: #1a3c38;
+            --card-bg: #ffffff;
+            --font-size: 16px;
+        }
+
+        /* Dark Mode variables applied on body class toggle */
+        body.dark-mode {
+            --bg-main: #121212;
+            --text-dark: #e0e0e0;
+            --card-bg: #1e1e1e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: var(--font-size);
+            transition: background 0.3s ease;
+        }
+
+        /* ================= MAIN INTERACTIVE LAYOUT ================= */
+        .demo-layout-area {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .demo-modal-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 500px;
+            padding: 45px 35px 40px 35px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(26, 60, 56, 0.15);
+            border: 1px solid rgba(45, 145, 126, 0.15);
+            text-align: center;
+            position: relative;
+            animation: cardEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transition: all 0.3s ease;
+        }
+
+        /* Top Right Close Cross Button */
+        .card-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 22px;
+            background: transparent;
+            border: none;
+            font-size: 28px;
+            line-height: 1;
+            color: var(--text-dark);
+            opacity: 0.4;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .card-close-btn:hover {
+            opacity: 1;
+            color: #e11d48;
+            transform: scale(1.1);
+        }
+
+        /* Progress Steps Dot Indicator Ring */
+        .demo-progress-steps {
+            display: flex;
+            justify-content: space-between;
+            max-width: 280px;
+            margin: 0 auto 35px auto;
+            position: relative;
+        }
+
+        .demo-progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(45, 145, 126, 0.15);
+            z-index: 1;
+            transform: translateY(-50%);
+        }
+
+        .step-dot {
+            position: relative;
+            z-index: 2;
+            width: 32px;
+            height: 32px;
+            background: var(--bg-main);
+            border: 2px solid rgba(45, 145, 126, 0.3);
+            color: var(--text-dark);
+            border-radius: 50%;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .step-dot.active {
+            background: var(--primary-green);
+            border-color: var(--primary-green);
+            color: white;
+            box-shadow: 0 0 12px rgba(45, 145, 126, 0.4);
+        }
+
+        /* Slide Viewport Transitions */
+        .demo-slide {
+            display: none;
+            min-height: 220px;
+        }
+
+        .demo-slide.active-slide {
+            display: block;
+            animation: slideReveal 0.4s ease-out forwards;
+        }
+
+        .demo-slide h3 {
+            font-size: 24px;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .demo-slide p {
+            font-size: 17px;
+            color: #5a7d78;
+            line-height: 1.65;
+        }
+
+        body.dark-mode .demo-slide p {
+            color: #aaa;
+        }
+
+        /* Icons & Micro-Animations */
+        .demo-icon-wrapper {
+            height: 90px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .demo-icon-wrapper i {
+            font-size: 46px;
+            color: var(--primary-green);
+        }
+
+        .movement-anim {
+            animation: driveCart 2.5s ease-in-out infinite alternate;
+        }
+        @keyframes driveCart {
+            0% { transform: translateX(-15px); }
+            100% { transform: translateX(15px); }
+        }
+
+        .phone-tilt {
+            animation: steeringPhone 3s ease-in-out infinite;
+        }
+        @keyframes steeringPhone {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-25deg); }
+            75% { transform: rotate(25deg); }
+        }
+
+        .scanner-laser {
+            animation: flashScanner 1.5s ease-in-out infinite;
+        }
+        @keyframes flashScanner {
+            0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 0px transparent); }
+            50% { opacity: 1; filter: drop-shadow(0 0 8px #e11d48); color: #e11d48; }
+        }
+
+        .alert-flash {
+            animation: warnPulse 1s ease-in-out infinite alternate;
+        }
+        @keyframes warnPulse {
+            from { transform: scale(1); color: var(--primary-green); }
+            to { transform: scale(1.15); color: #d97706; }
+        }
+
+        .pulse-card {
+            animation: cardSwipe 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes cardSwipe {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px) rotate(-5deg); color: #2563eb; }
+        }
+
+        /* Navigation Buttons UI */
+        .demo-navigation-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 35px;
+            gap: 15px;
+        }
+
+        .btn-demo-nav {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+
+        .btn-demo-nav.primary {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 4px 12px rgba(45, 145, 126, 0.2);
+        }
+
+        .btn-demo-nav.primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(45, 145, 126, 0.3);
+        }
+
+        .btn-demo-nav.secondary {
+            background: var(--bg-main);
+            color: var(--text-dark);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        body.dark-mode .btn-demo-nav.secondary {
+            background: #2d2d2d;
+            color: #fff;
+            border-color: #444;
+        }
+
+        .btn-demo-nav.secondary:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        .btn-demo-nav:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Keyframe Entrance and Sliding Animations */
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: scale(0.95) translateY(30px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes slideReveal {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ================= TOP TOGGLE THEME NAV ================= */
+        .top-nav {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .theme-switch-wrapper i {
+            color: #7a9a95;
+            font-size: 14px;
+        }
+
+        .theme-switch {
+            position: relative;
+            width: 44px;
+            height: 22px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider-round:before {
+            content: "";
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+
+        input:checked + .slider-round {
+            background: var(--primary-green);
+        }
+
+        input:checked + .slider-round:before {
+            transform: translateX(22px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-nav">
+    <div class="theme-switch-wrapper">
+        <i class="fas fa-sun"></i>
+        <label class="theme-switch">
+            <input type="checkbox" id="modeToggle">
+            <span class="slider-round"></span>
+        </label>
+        <i class="fas fa-moon"></i>
+    </div>
+</div>
+
+<main class="demo-layout-area">
+    <div class="demo-modal-card" id="demoCard">
+        
+        <button class="card-close-btn" id="exitDemoBtn" title="Exit Demo">&times;</button>
+        
+        <div class="demo-progress-steps" id="progressWrapper">
+            <div class="step-dot active" data-target="0">1</div>
+            <div class="step-dot" data-target="1">2</div>
+            <div class="step-dot" data-target="2">3</div>
+            <div class="step-dot" data-target="3">4</div>
+            <div class="step-dot" data-target="4">5</div>
+        </div>
+
+        <div class="demo-slide active-slide" data-slide="0">
+            <div class="demo-icon-wrapper">
+                <i class="fas fa-person-walking fa-bounce" style="--fa-animation-duration: 2s;"></i>
+                <i class="fas fa-cart-flatbed-suitcase movement-anim"></i>
+            </div>
+            <h3>01. Cart will Follow you!</h3>
+            <p>Simply walk directly in front of the trolley. The integrated vision system automatically pairs with you and follows your path seamlessly down aisles without physical contact.</p>
+        </div>
+
+        <div class="demo-slide" data-slide="1">
+            <div class="demo-icon-wrapper">
+                <i class="fas fa-mobile-screen-button phone-tilt"></i>
+                <i class="fas fa-gamepad"></i>
+            </div>
+            <h3>02. Manual Control Mode</h3>
+            <p>Take manual command at any moment. Your personal phone serves as a localized remote control layout, letting you steer and position the cart exactly where you need it.</p>
+        </div>
+
+        <div class="demo-slide" data-slide="2">
+            <div class="demo-icon-wrapper">
+                <i class="fas fa-barcode scanner-laser"></i>
+                <i class="fas fa-apple-whole"></i>
+            </div>
+            <h3>03. Smart Product Detection</h3>
+            <p>Ready to Start Shopping? Hold any Product's barcode in front of the scanner mounted right near the trolley handle. Products log into your database itemized receipt in real-time.</p>
+        </div>
+
+        <div class="demo-slide" data-slide="3">
+            <div class="demo-icon-wrapper">
+                <i class="fas fa-triangle-exclamation alert-flash"></i>
+                <i class="fas fa-basket-shopping"></i>
+            </div>
+            <h3>04. Automated Cart Verification</h3>
+            <p>Every product must be scanned! If an item is dropped into the basket without verification, it will flag the addition and a popup will appear on the display screen.</p>
+        </div>
+
+        <div class="demo-slide" data-slide="4">
+            <div class="demo-icon-wrapper">
+                <i class="fas fa-credit-card pulse-card"></i>
+                <i class="fas fa-circle-check" style="color: #10b981;"></i>
+            </div>
+            <h3>05. Payment on Dashboard</h3>
+            <p>Skip the old checkout counters completely. Finalize transactions securely directly through dashboard using digital payment methods.</p>
+        </div>
+
+        <div class="demo-slide" id="exitedStateSlide">
+            <div class="demo-icon-wrapper">
+                <i class="fas fa-circle-xmark" style="color: #e11d48;"></i>
+            </div>
+            <h3>Demo Exited</h3>
+            <p>You have successfully closed the live simulator dashboard.</p>
+        </div>
+
+        <div class="demo-navigation-controls" id="controlsWrapper">
+            <button class="btn-demo-nav secondary" id="prevDemoBtn" disabled>Back</button>
+            <button class="btn-demo-nav primary" id="nextDemoBtn">Next Step</button>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const nextBtn = document.getElementById('nextDemoBtn');
+    const prevBtn = document.getElementById('prevDemoBtn');
+    const exitBtn = document.getElementById('exitDemoBtn');
+    
+    const progressWrapper = document.getElementById('progressWrapper');
+    const controlsWrapper = document.getElementById('controlsWrapper');
+    const exitedStateSlide = document.getElementById('exitedStateSlide');
+    
+    const slides = document.querySelectorAll('.demo-slide:not(#exitedStateSlide)');
+    const dots = document.querySelectorAll('.step-dot');
+    
+    let activeIndex = 0;
+    const maxSteps = slides.length;
+    let isExited = false;
+
+    // Next Button Functionality
+    nextBtn.addEventListener('click', () => {
+        if (isExited) {
+            // Act as a restart button when in exited state
+            isExited = false;
+            activeIndex = 0;
+            progressWrapper.style.display = 'flex';
+            controlsWrapper.style.display = 'flex';
+            exitBtn.style.display = 'block';
+            exitedStateSlide.classList.remove('active-slide');
+            updateSlideUI();
+            return;
+        }
+
+        if (activeIndex < maxSteps - 1) {
+            activeIndex++;
+            updateSlideUI();
+        } else {
+            activeIndex = 0;
+            updateSlideUI();
+        }
+    });
+
+    // Back Button Functionality
+    prevBtn.addEventListener('click', () => {
+        if (activeIndex > 0 && !isExited) {
+            activeIndex--;
+            updateSlideUI();
+        }
+    });
+
+    // Close Button Handling (Exit State)
+    exitBtn.addEventListener('click', () => {
+        window.location.href = "{{ url_for('home') }}"; 
+    });
+
+    // Directly click navigation progress indicator steps
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            if (!isExited) {
+                activeIndex = index;
+                updateSlideUI();
+            }
+        });
+    });
+
+    function updateSlideUI() {
+        // Ensure regular nav layout buttons are visible
+        prevBtn.style.display = 'block';
+
+        slides.forEach((slide, idx) => {
+            slide.classList.toggle('active-slide', idx === activeIndex);
+        });
+
+        dots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === activeIndex);
+        });
+
+        prevBtn.disabled = (activeIndex === 0);
+        
+        if (activeIndex === maxSteps - 1) {
+            nextBtn.innerHTML = 'Restart Demo <i class="fas fa-rotate-right" style="margin-left: 5px; font-size:13px;"></i>';
+        } else {
+            nextBtn.innerHTML = 'Next Step';
+        }
+    }
+
+    // Independent Dark Mode Switcher Handler
+    const modeToggle = document.getElementById('modeToggle');
+    modeToggle.addEventListener('change', function() {
+        document.body.classList.toggle('dark-mode', this.checked);
+    });
+});
+</script>
+</body>
+</html>

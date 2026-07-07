@@ -34,7 +34,7 @@ function selectMethod(method) {
 
   if (method === "meezan") {
     jazzBtn.classList.add("active");
-    selectedMethodText.textContent = "Meezab";
+    selectedMethodText.textContent = "Meezan";
     qrImage.src = "/static/payments/meezan-qr.png";
   }
 

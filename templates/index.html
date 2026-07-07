@@ -5,7 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Smart AI Cart POS</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+<style>
+    /* Inlined styling to position the back button beside the scanner smoothly */
+    .scanner-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+    }
+    .btn-back-home {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #ffffff;
+        color: #2d917e;
+        border: 1px solid rgba(45, 145, 126, 0.2);
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;
+    }
+    .btn-back-home:hover {
+        background: #f0f7f9;
+        transform: translateX(-2px);
+        border-color: #2d917e;
+    }
+</style>
 </head>
 
 <body>
@@ -14,6 +48,9 @@
     <div class="left-side">
 
         <div class="scanner-header">
+            <a href="{{ url_for('home') }}" class="btn-back-home">
+                <i class="fas fa-arrow-left"></i> Exit Cart
+            </a>
             <input type="text" id="barcode" placeholder="Scan barcode..." autocomplete="off">
         </div>
 
@@ -28,10 +65,10 @@
         </div>
 
         <div class="ai-footer">
-            <span class="section-label">AI Recommendations</span>
+            <span class="section-label">Recommendations</span>
 
             <div class="ai-list">
-                <div class="ai-card" onclick="addRecommended('111111','Bread',180,'bread.png')">
+                <div class="ai-card" style="cursor: default;">
                     <img src="/static/images/bread.png">
                     <div class="ai-card-text">
                         <span>Bread</span>
@@ -39,7 +76,7 @@
                     </div>
                 </div>
 
-                <div class="ai-card" onclick="addRecommended('222222','Butter',220,'butter.png')">
+                <div class="ai-card" style="cursor: default;">
                     <img src="/static/images/butter.png">
                     <div class="ai-card-text">
                         <span>Butter</span>
@@ -47,7 +84,7 @@
                     </div>
                 </div>
 
-                <div class="ai-card" onclick="addRecommended('333333','Eggs',320,'eggs.png')">
+                <div class="ai-card" style="cursor: default;">
                     <img src="/static/images/eggs.png">
                     <div class="ai-card-text">
                         <span>Eggs</span>
@@ -65,18 +102,18 @@
         <div id="cartItems" class="cart-items"></div>
 
         <div class="bill">
-<button type="button" class="clear-cart-btn" onclick="clearCart()">
-    Clear Cart
-</button>
+            <button type="button" class="clear-cart-btn" onclick="clearCart()">
+                Clear Cart
+            </button>
 
-    <div class="row"><span>Subtotal</span><strong id="subtotal">Rs 0</strong></div>
-    <div class="row"><span>Tax(5%)</span><strong id="tax">Rs 0</strong></div>
-    <div class="row total"><span>Total</span><strong id="grandTotal">Rs 0</strong></div>
+            <div class="row"><span>Subtotal</span><strong id="subtotal">Rs 0</strong></div>
+            <div class="row"><span>Tax(5%)</span><strong id="tax">Rs 0</strong></div>
+            <div class="row total"><span>Total</span><strong id="grandTotal">Rs 0</strong></div>
 
-    <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">
-        Proceed to Checkout
-    </button>
-</div>
+            <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">
+                Proceed to Checkout
+            </button>
+        </div>
     </div>
 </div>
 
@@ -202,19 +239,7 @@ function addCurrentProduct() {
     .catch(err => alert("Failed to add item"));
 }
 
-function removeCurrentProduct() {
-    if (!currentProduct) return;
-
-    fetch("/remove", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({barcode: currentProduct.barcode})
-    })
-    .then(res => res.json())
-    .then(data => updateBill(data))
-    .catch(err => alert("Failed to remove item"));
-}
-
+// Fixed missing dynamic recommendation assignment logic inside your helper
 function addRecommended(barcode, name, price, image) {
     currentProduct = {barcode, name, price, image};
     setProductView(currentProduct);
@@ -232,12 +257,6 @@ document.getElementById("barcode").addEventListener("keypress", function(e) {
     }
 });
 
-/*
-This runs when:
-1. Page loads normally
-2. Page refreshes
-3. User presses browser back and returns to this page
-*/
 window.addEventListener("pageshow", function(event) {
     const fromCheckout = sessionStorage.getItem("fromCheckout");
 

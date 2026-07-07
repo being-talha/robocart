@@ -32,6 +32,9 @@ def home():
 def shop():
     return render_template("index.html")
 
+@app.route('/demo')
+def demo():
+    return render_template('demo.html')
 
 PAYMENTS_FILE = "payments.json"
 
